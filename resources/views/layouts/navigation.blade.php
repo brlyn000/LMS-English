@@ -7,7 +7,7 @@
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-white font-bold text-xl">
                         <!-- <img src="{{ asset('images/garuda.png') }}" alt="Logo" class="w-8 h-8"> -->
                          <i class="fas fa-graduation-cap text-xl"></i>
-                        <span>Real World</span>
+                        <span>LMS Polteksi</span>
                     </a>
                 </div>
 

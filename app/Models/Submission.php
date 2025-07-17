@@ -10,7 +10,9 @@ class Submission extends Model
     use HasFactory;
 
     protected $table = 'submissions';
-
+    protected $casts = [
+        'submitted_at' => 'datetime',
+    ];
     protected $fillable = [
         'material_id',
         'user_id',
@@ -18,6 +20,7 @@ class Submission extends Model
         'notes',
         'submitted_at',
         'score',
+        'comment'
     ];
 
     public function material()

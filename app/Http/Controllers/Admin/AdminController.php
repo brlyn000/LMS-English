@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\AdminMiddleware;
@@ -22,7 +23,18 @@ class AdminController extends Controller
 
     public function index()
     {
-        // Data yang akan ditampilkan di dashboard admin
-        return view('admin.dashboard'); // Buat file ini di resources/views/admin/dashboard.blade.php
+        $prodiCounts = User::whereHas('roles', function ($q) {
+            $q->where('name', 'student');
+        })->select('program_studi', DB::raw('count(*) as total'))
+        ->groupBy('program_studi')
+        ->get();
+
+        $labels = $prodiCounts->pluck('program_studi');
+        $data = $prodiCounts->pluck('total');
+
+        return view('admin.dashboard', [
+            'labels' => $labels,
+            'data' => $data,
+        ]);
     }
 }

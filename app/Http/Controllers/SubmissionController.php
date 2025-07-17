@@ -25,7 +25,7 @@ class SubmissionController extends Controller
         ]);
 
         // Simpan file
-        $path = $request->file('file')->store('submissions');
+        $path = $request->file('file')->store('submissions', "public");
 
 
         $submission = Submission::create([
@@ -73,5 +73,44 @@ class SubmissionController extends Controller
 
         return redirect()->back()->with('success', 'Tugas berhasil dihapus.');
     }
+
+    public function addComment(Request $request, $id)
+    {
+        $request->validate([
+            'comment' => 'nullable|string|max:1000',
+        ]);
+
+        $submission = Submission::findOrFail($id);
+
+        // Periksa apakah user punya role admin (1) atau instruktur (2)
+        if (!Auth::user()->roles->pluck('id')->intersect([1, 2])->count()) {
+            abort(403);
+        }
+
+        $submission->comment = $request->comment;
+        $submission->save();
+
+        return redirect()->back()->with('success', 'Komentar berhasil disimpan.');
+    }
+
+        public function addScore(Request $request, $id)
+    {
+        $request->validate([
+            'score' => 'nullable|int|max:255',
+        ]);
+
+        $submission = Submission::findOrFail($id);
+
+        // Periksa apakah user punya role admin (1) atau instruktur (2)
+        if (!Auth::user()->roles->pluck('id')->intersect([1, 2])->count()) {
+            abort(403);
+        }
+
+        $submission->score = $request->score;
+        $submission->save();
+
+        return redirect()->back()->with('success', 'Score berhasil disimpan.');
+    }
+
 
 }

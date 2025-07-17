@@ -97,7 +97,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#" class="flex items-center px-4 py-3 text-red-100 hover:bg-red-600 hover:text-white rounded-lg transition-all duration-200 group">
+                            <a href="{{ route('admin.threads.index') }}" class="flex items-center px-4 py-3 text-red-100 hover:bg-red-600 hover:text-white rounded-lg transition-all duration-200 group">
                                 <div class="w-6 text-center mr-3">
                                     <i class="fas fa-comments text-red-300 group-hover:text-white"></i>
                                 </div>

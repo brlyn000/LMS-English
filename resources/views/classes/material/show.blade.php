@@ -190,7 +190,7 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-500">File Tugas</p>
+                                        <p class="text-sm font-medium text-gray-500">File Submission</p>
                                         <a href="{{ asset('storage/' . $mySubmission->file_path) }}" target="_blank" 
                                         class="inline-flex items-center text-red-600 hover:text-red-800 font-medium group">
                                             {{ basename($mySubmission->file_path) }}
@@ -210,7 +210,7 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-500">Catatan</p>
+                                        <p class="text-sm font-medium text-gray-500">Notes</p>
                                         <p class="text-gray-700">{{ $mySubmission->notes }}</p>
                                     </div>
                                 </div>
@@ -224,8 +224,33 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <p class="text-sm font-medium text-gray-500">Waktu Pengumpulan</p>
+                                        <p class="text-sm font-medium text-gray-500">Submission Time</p>
                                         <p class="text-gray-700">{{ $mySubmission->submitted_at }}</p>
+                                    </div>
+                                </div>
+                                <!-- Comments -->
+                                <div class="flex items-start gap-4">
+                                    <div class="flex-shrink-0 bg-blue-100 p-3 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.84L3 21l1.84-4A8.96 8.96 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                        </svg>
+
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Comment</p>
+                                        <p class="text-gray-700">{{ $mySubmission->comment }}</p>
+                                    </div>
+                                </div>
+                                <!-- Score -->
+                                <div class="flex items-start gap-4">
+                                    <div class="flex-shrink-0 bg-amber-100 p-3 rounded-lg">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 21h8M12 17v4M7 4h10v6a5 5 0 01-10 0V4zm-2 0a2 2 0 00-2 2v1a3 3 0 003 3V4H5zm14 0a2 2 0 012 2v1a3 3 0 01-3 3V4h1z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-500">Score</p>
+                                        <p class="text-gray-700">{{ $mySubmission->score }}</p>
                                     </div>
                                 </div>
                             </div>
@@ -247,65 +272,69 @@
                         </div>
                     </div>
                 @else
-                <form action="{{ route('submissions.store', $material->id) }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-6">
-                    @csrf
-                    <!-- File Upload Card -->
-                    <div class="space-y-2">
-                        <label for="file" class="block text-sm font-medium text-gray-700 mb-2">Upload File Tugas</label>
+                @if($material->type === 'Tugas')
+                    <form action="{{ route('submissions.store', $material->id) }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-6">
+                        @csrf
                         
-                        <div class="relative group">
-                            <div class="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-red-700 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+                        <!-- File Upload Card -->
+                        <div class="space-y-2">
+                            <label for="file" class="block text-sm font-medium text-gray-700 mb-2">Upload File Tugas</label>
                             
-                            <div class="relative bg-white rounded-lg border-2 border-dashed border-gray-300 hover:border-red-400 transition-colors duration-300">
-                                <div class="flex flex-col items-center justify-center pt-5 pb-6 px-4" id="drop-area">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                    </svg>
-                                    <p class="mb-2 text-sm text-gray-500">
-                                        <span class="font-semibold">Klik untuk upload</span> atau drag & drop file
-                                    </p>
-                                    <p class="text-xs text-gray-400">Format: PDF, DOCX, PPTX, JPG, PNG (Maks. 10MB)</p>
-                                    <input type="file" name="file" id="file" required 
-                                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                                        onchange="displayFileName(this)">
+                            <div class="relative group">
+                                <div class="absolute -inset-0.5 bg-gradient-to-r from-red-500 to-red-700 rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-300"></div>
+                                
+                                <div class="relative bg-white rounded-lg border-2 border-dashed border-gray-300 hover:border-red-400 transition-colors duration-300">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6 px-4" id="drop-area">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500">
+                                            <span class="font-semibold">Klik untuk upload</span> atau drag & drop file
+                                        </p>
+                                        <p class="text-xs text-gray-400">Format: PDF, DOCX, PPTX, JPG, PNG (Maks. 10MB)</p>
+                                        <input type="file" name="file" id="file" required 
+                                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                            onchange="displayFileName(this)">
+                                    </div>
                                 </div>
                             </div>
+                            
+                            <div id="file-name" class="text-sm text-gray-600 mt-2 hidden">
+                                <span class="font-medium">File dipilih:</span> <span id="name-display"></span>
+                                <button type="button" onclick="clearFileInput()" class="ml-2 text-red-500 hover:text-red-700">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
-                        
-                        <div id="file-name" class="text-sm text-gray-600 mt-2 hidden">
-                            <span class="font-medium">File dipilih:</span> <span id="name-display"></span>
-                            <button type="button" onclick="clearFileInput()" class="ml-2 text-red-500 hover:text-red-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
+
+                        <!-- Notes Section -->
+                        <div class="space-y-2">
+                            <label for="notes" class="block text-sm font-medium text-gray-700">Catatan (Opsional)</label>
+                            <div class="relative">
+                                <textarea name="notes" id="notes" rows="4" 
+                                        class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
+                                        placeholder="Tambahkan catatan atau penjelasan tentang tugas Anda..."></textarea>
+                                <div class="absolute bottom-2 right-2 text-xs text-gray-400" id="char-count">0/500</div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="pt-2">
+                            <button type="submit" 
+                                    class="group relative w-full flex justify-center items-center py-3 px-6 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 shadow-md hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-300 transform hover:-translate-y-0.5">
+                                <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-200 group-hover:text-red-100 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                    </svg>
+                                </span>
+                                Kumpulkan Tugas
                             </button>
                         </div>
-                    </div>
+                    </form>
+                @endif
 
-                    <!-- Notes Section -->
-                    <div class="space-y-2">
-                        <label for="notes" class="block text-sm font-medium text-gray-700">Catatan (Opsional)</label>
-                        <div class="relative">
-                            <textarea name="notes" id="notes" rows="4" 
-                                    class="block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500 transition duration-200"
-                                    placeholder="Tambahkan catatan atau penjelasan tentang tugas Anda..."></textarea>
-                            <div class="absolute bottom-2 right-2 text-xs text-gray-400" id="char-count">0/500</div>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="pt-2">
-                        <button type="submit" 
-                                class="group relative w-full flex justify-center items-center py-3 px-6 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-red-600 to-red-700 shadow-md hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-300 transform hover:-translate-y-0.5">
-                            <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-200 group-hover:text-red-100 transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                </svg>
-                            </span>
-                            Kumpulkan Tugas
-                        </button>
-                    </div>
-                </form>
 
                 <script>
                     // Display selected file name
@@ -382,7 +411,99 @@
                     }
                 </script>
                 @endif
+                @php
+                    $userRoleId = Auth::user()->roles->first()->id ?? null;
+                @endphp
 
+                @if(in_array($userRoleId, [1, 2]))
+                    <div class="mt-10 bg-white shadow-lg rounded-lg overflow-hidden border border-red-100">
+                        <div class="bg-red-600 px-6 py-4">
+                            <h3 class="text-lg font-bold text-white">Daftar Pengumpulan Tugas</h3>
+                        </div>
+
+                        @if($material->submissions->count() > 0)
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-red-200">
+                                    <thead class="bg-red-50">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider">No</th>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider">Nama</th>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider">File</th>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider">Waktu</th>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider">Catatan</th>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider">Komentar</th>
+                                            <th class="px-6 py-3 text-left text-xs font-bold text-red-700 uppercase tracking-wider">Nilai</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-red-100">
+                                        @foreach($material->submissions as $index => $submission)
+                                            <tr class="hover:bg-red-50 transition-colors duration-150">
+                                                <td class="px-6 py-4 whitespace-nowrap text-center text-gray-600">
+                                                    {{ $loop->iteration }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                                                    {{ $submission->user->name }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <a href="{{ asset('storage/' . $submission->file_path) }}" target="_blank" 
+                                                    class="text-red-600 hover:text-red-800 underline font-medium">
+                                                        {{ basename($submission->file_path) }}
+                                                    </a>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                                                    {{ $submission->submitted_at->format('d M Y H:i') }}
+                                                </td>
+                                                <td class="px-6 py-4 text-gray-600">
+                                                    {{ $submission->notes ?? '-' }}
+                                                </td>
+                                                @if(in_array($userRoleId, [1, 2]))
+                                                    <td class="px-6 py-4 w-1/4">
+                                                        <form action="{{ route('submissions.comment', $submission->id) }}" method="POST">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <div class="flex flex-col space-y-2">
+                                                                <textarea name="comment" rows="3"
+                                                                        class="border border-red-300 focus:border-red-500 focus:ring-red-500 rounded-md px-3 py-2 text-sm w-full"
+                                                                        placeholder="Tulis komentar lengkap disini...">{{ $submission->comment }}</textarea>
+                                                                <button type="submit" 
+                                                                        class="self-end bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                                                                    Simpan Komentar
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </td>
+                                                    {{-- Input Nilai --}}
+                                                    <td class="px-4 py-2">
+                                                        <form action="{{ route('submissions.score', $submission->id) }}" method="POST" class="flex items-center space-x-2">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <input type="number" name="score" value="{{ $submission->score }}" placeholder="0-100" min="0" max="100" class="border border-gray-300 rounded px-2 py-1 text-sm w-20">
+                                                            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">OK</button>
+                                                        </form>
+                                                    </td>
+                                                @else
+                                                    <td class="px-6 py-4 text-gray-600">
+                                                        {{ $submission->comment ?? '-' }}
+                                                    </td>
+                                                    <td class="px-4 py-2 text-gray-600">{{ $submission->score ?? '-' }}</td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        @else
+                            <div class="px-6 py-8 text-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                                <h4 class="mt-3 text-lg font-medium text-gray-700">Belum ada pengumpulan tugas</h4>
+                                <p class="mt-1 text-gray-500">Belum ada siswa yang mengumpulkan tugas ini.</p>
+                            </div>
+                        @endif
+                    </div>
+                @endif
                 </div>
             </div>
         </div>

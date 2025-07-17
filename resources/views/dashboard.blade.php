@@ -46,75 +46,75 @@
                             </div>
                         </div>
                         <div class="md:w-2/3 p-8">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 class="text-xs font-semibold text-red-600 uppercase tracking-wider">Academic Progress</h4>
-                                    <div class="mt-4 space-y-4">
-                                        <div>
-                                            <div class="flex justify-between text-sm text-gray-600 mb-1">
-                                                <span>Course Completion</span>
-                                                <span>65%</span>
-                                            </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                                <div class="bg-red-600 h-2 rounded-full" style="width: 65%"></div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between text-sm text-gray-600 mb-1">
-                                                <span>Assignment Submission</span>
-                                                <span>80%</span>
-                                            </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                                <div class="bg-red-600 h-2 rounded-full" style="width: 80%"></div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="flex justify-between text-sm text-gray-600 mb-1">
-                                                <span>Forum Participation</span>
-                                                <span>45%</span>
-                                            </div>
-                                            <div class="w-full bg-gray-200 rounded-full h-2">
-                                                <div class="bg-red-600 h-2 rounded-full" style="width: 45%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <h4 class="text-xs font-semibold text-red-600 uppercase tracking-wider">Quick Actions</h4>
-                                    <div class="mt-4 grid grid-cols-2 gap-3">
-                                        <a href="#" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
-                                            <svg class="h-6 w-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                            </svg>
-                                            <span class="text-xs font-medium">Courses</span>
-                                        </a>
-                                        @php
-                                            $card = $card_home[0];
-                                        @endphp
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Academic Progress Section -->
+                        <div>
+                            <h4 class="text-xs font-semibold text-red-600 uppercase tracking-wider">Academic Progress</h4>
+                            <div class="mt-4 space-y-4">
+                                @php
+                                    $progressBars = [
+                                        ['label' => 'Course Completion', 'value' => $courseCompletion ?? 0],
+                                        ['label' => 'Assignment Submission', 'value' => $assignmentSubmission ?? 0],
+                                        ['label' => 'Forum Participation', 'value' => $forumParticipation ?? 0],
+                                    ];
+                                @endphp
 
-                                        <a href="{{ url($card->link) }}" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
-                                            <svg class="h-6 w-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            <span class="text-xs font-medium">Classes</span>
-                                        </a>
-                                        <a href="#" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
-                                            <svg class="h-6 w-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                                            </svg>
-                                            <span class="text-xs font-medium">Forums</span>
-                                        </a>
-                                        <a href="#" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
-                                            <svg class="h-6 w-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                                            </svg>
-                                            <span class="text-xs font-medium">Settings</span>
-                                        </a>
+                                @foreach ($progressBars as $bar)
+                                    <div>
+                                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                                            <span>{{ $bar['label'] }}</span>
+                                            <span>{{ $bar['value'] }}%</span>
+                                        </div>
+                                        <div class="w-full bg-gray-200 rounded-full h-2">
+                                            <div class="bg-red-600 h-2 rounded-full transition-all duration-300" style="width: {{ $bar['value'] }}%"></div>
+                                        </div>
                                     </div>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
+
+                        <!-- Quick Actions Section -->
+                        <div>
+                            <h4 class="text-xs font-semibold text-red-600 uppercase tracking-wider">Quick Actions</h4>
+                            <div class="mt-4 grid grid-cols-2 gap-3">
+                                <a href="{{ route('class') }}" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
+                                    <!-- Book Open Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v12m0-12C10.343 6 9 7.343 9 9v8m3-11c1.657 0 3 1.343 3 3v8" />
+                                    </svg>
+                                    <span class="text-xs font-medium">Courses</span>
+                                </a>
+
+                                @php $card = $card_home[0]; @endphp
+                                <a href="{{ url($card->link) }}" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
+                                    <!-- Academic Cap Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6m0-6l-4 2.5m4-2.5l4 2.5" />
+                                    </svg>
+                                    <span class="text-xs font-medium">Classes</span>
+                                </a>
+
+                                <a href="{{ route('forum.index') }}" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
+                                    <!-- Chat Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.86 9.86 0 01-4.255-.949L3 20l1.395-3.72A7.97 7.97 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                    </svg>
+                                    <span class="text-xs font-medium">Forums</span>
+                                </a>
+
+                                <a href="{{ route('profile.edit') }}" class="bg-red-50 hover:bg-red-100 text-red-700 p-3 rounded-lg flex flex-col items-center justify-center transition">
+                                    <!-- Cog Icon -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.983 13.03a2.01 2.01 0 110-2.06 2.01 2.01 0 010 2.06zM12 6v1m0 10v1m6.364-6.364h1M5.636 12H4m12.728 4.728l.707.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l.707.707" />
+                                    </svg>
+                                    <span class="text-xs font-medium">Settings</span>
+                                </a>
+                            </div>
+
+                        </div>
+                        </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

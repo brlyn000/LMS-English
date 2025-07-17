@@ -1,12 +1,14 @@
 <x-guest-layout>
-    <div class="min-h-screen bg-gradient-to-br from-red-600 via-white to-red-600 flex items-center justify-center p-6">
+    <div class="min-h-screen flex items-center justify-center p-6 bg-image">
         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden w-full max-w-4xl grid grid-cols-1 md:grid-cols-2">
             <!-- Left Banner / Illustration Side -->
             <div class="hidden md:flex bg-red-600 text-white flex-col items-center justify-center p-10">
                 <div class="text-left">
-                    <h2 class="text-3xl font-bold tracking-wide">Welcome to LMS</h2>
+                    <i class="fas fa-graduation-cap text-4xl"></i>
+                    <h2 class="text-3xl font-bold tracking-wide">Welcome to Real World</h2>
                     <p class="mt-4 text-lg">For English Class Students of:</p>
                     <ul class="mt-4 text-sm list-disc list-inside">
+                        
                         <li>Accounting</li>
                         <li>Office Administration</li>
                         <li>Mechanical Engineering</li>
@@ -17,7 +19,7 @@
 
             <!-- Right Form Side -->
             <div class="p-8 md:p-12 bg-white">
-                <h2 class="text-2xl font-bold text-center text-red-700">Log in to Your LMS Account</h2>
+                <h2 class="text-2xl font-bold text-center text-red-700">Log in to Your Real World Account</h2>
                 <p class="text-center text-sm text-gray-500 mb-6">Please enter your credentials to continue</p>
 
                 <!-- Session Status -->

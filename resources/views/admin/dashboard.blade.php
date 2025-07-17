@@ -218,15 +218,19 @@
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+        const labels = @json($labels);
+        const enrollData = @json($enrollData);  
+        const courseData = @json($courseData);  
         // Enrollment by Program Chart
         const enrollmentCtx = document.getElementById('enrollmentChart').getContext('2d');
         const enrollmentChart = new Chart(enrollmentCtx, {
             type: 'bar',
             data: {
+
                 labels: ['Accounting', 'Information Technology', 'Office Administration', 'Mechanical Technology'],
                 datasets: [{
                     label: 'Students',
-                    data: [50, 85, 20, 28],
+                    data: enrollData,
                     backgroundColor: [
                         'rgba(229, 62, 62, 0.8)',
                         'rgba(49, 130, 206, 0.8)',
@@ -301,7 +305,7 @@
             data: {
                 labels: ['Accounting', 'Information Technology', 'Office Administration', 'Mechanical Technology'],
                 datasets: [{
-                    data: [15, 18, 8, 7],
+                    data: courseData,
                     backgroundColor: [
                         'rgba(229, 62, 62, 0.8)',
                         'rgba(49, 130, 206, 0.8)',

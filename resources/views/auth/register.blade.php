@@ -1,13 +1,12 @@
 <x-guest-layout>
-    <div class="min-h-screen bg-gradient-to-br from-red-600 via-white to-red-600 flex items-center justify-center p-6">
+    <div class="min-h-screen flex items-center justify-center p-6 bg-image">
         <div class="max-w-6xl w-full grid grid-cols-1 md:grid-cols-2 shadow-2xl rounded-xl overflow-hidden border border-red-600">
             
             <!-- Side Info / Illustration -->
             <div class="bg-red-600 text-white p-10 flex flex-col justify-center relative">
-                <h2 class="text-4xl font-bold mb-4 animate-pulse">Welcome to Red-White LMS</h2>
+                <h2 class="text-4xl font-bold mb-4 ">Welcome to Red-White LMS</h2>
                 <p class="text-lg">Register to get access to your class and discussion forum. Let's learn and grow together!</p>
-                <img src="https://cdn-icons-png.flaticon.com/512/3039/3039430.png" alt="Education" class="w-48 h-48 mx-auto mt-8 ">
-                <div class="absolute bottom-4 right-4 text-sm text-white/70">Powered by Laravel Breeze</div>
+                <i class="fas fa-graduation-cap text-9xl text-center mt-10"></i>
             </div>
 
             <!-- Registration Form -->

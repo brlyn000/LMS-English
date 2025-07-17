@@ -2,12 +2,18 @@
 
 use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\CardHomeController;
+use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ModuleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\SubmissionController;
 use App\Models\CardHome;
 use App\Http\Controllers\MaterialController;
+use App\Models\Material;
+use App\Models\Module;
+use App\Models\Reply;
+use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 
 
@@ -23,6 +29,11 @@ Route::middleware(['auth'])->post('/materials/{material}/submit', [SubmissionCon
 Route::middleware(['auth', 'role:1,2'])->get('/admin/materials/{material}/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
 Route::delete('/submissions/{id}', [SubmissionController::class, 'destroy'])->name('submissions.destroy');
 
+Route::middleware(['auth'])->group(function () {
+    Route::patch('/submissions/{id}/comment', [SubmissionController::class, 'addComment'])->name('submissions.comment');
+    Route::patch('/submissions/{id}/score', [SubmissionController::class, 'addScore'])->name('submissions.score');
+
+});
 
 // Route admin dan instructor
 Route::middleware(['auth', 'role:1,2'])->group(function () {
@@ -68,21 +79,62 @@ Route::middleware(['auth','role:1' ])->group(function () {
     Route::get('/module/show', [ModuleController::class, 'show'])->name('admin.module.show');
     //Material
     Route::get('admin/material/{id}', [MaterialController::class, 'admin'])->name('admin.material.admin');
+    //Threads
+        Route::get('/admin/threads', [ForumController::class, 'admin'])->name('admin.threads.index');
+    });
+
+    Route::get('/', function () {
+        $user = auth()->user();
+
+        $card_home = CardHome::where('status', 'Active')->orderBy('name')->get();
+
+        $totalModules = Module::count();
+        $completedModules = Submission::where('user_id', $user->id)
+            ->distinct('material_id')
+            ->count('material_id');
+        $courseCompletion = $totalModules ? round(($completedModules / $totalModules) * 100) : 0;
+
+        $totalAssignments = Material::count();
+        $userSubmissions = Submission::where('user_id', $user->id)->count();
+        $assignmentSubmission = $totalAssignments ? round(($userSubmissions / $totalAssignments) * 100) : 0;
+
+        $totalThreads = Reply::count();
+        $userReplies = Reply::where('user_id', $user->id)->count();
+        $forumParticipation = $totalThreads ? round(($userReplies / $totalThreads) * 100) : 0;
+
+        return view('dashboard', compact(
+            'card_home',
+            'courseCompletion',
+            'assignmentSubmission',
+            'forumParticipation'
+        ));
+    })->middleware(['auth', 'verified'])->name('dashboard');
 
 
-});
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
 
-Route::get('/', function () {
-    $card_home = CardHome::where('status', 'Active')->orderBy('name')->get();
-    return view('dashboard',compact('card_home'));
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-
-
+    Route::middleware(['auth'])->group(function () {
+        Route::post('/threads/{thread}/replies', [ReplyController::class, 'store'])->name('replies.store');
+        Route::get('/replies/{reply}/edit', [ReplyController::class, 'edit'])->name('replies.edit');
+        Route::put('/replies/{reply}', [ReplyController::class, 'update'])->name('replies.update');
+        Route::delete('/replies/{reply}', [ReplyController::class, 'destroy'])->name('replies.destroy');
+    });
+    
+    Route::middleware(['auth', 'role:1,2'])->group(function () {
+        Route::get('/forum/create', [ForumController::class, 'create'])->name('forum.create');
+        Route::post('/forum', [ForumController::class, 'store'])->name('forum.store');
+        Route::delete('/forum/{thread}', [ForumController::class, 'destroy'])->name('forum.destroy');
+        Route::get('/forum/{thread}/edit', [ForumController::class, 'edit'])->name('forum.edit');     
+        Route::put('/forum/{thread}', [ForumController::class, 'update'])->name('forum.update'); 
+    });
+    
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
+        Route::get('/forum/{thread}', [ForumController::class, 'show'])->name('forum.show');
+    });
 
 require __DIR__.'/auth.php';

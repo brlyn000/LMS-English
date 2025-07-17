@@ -21,4 +21,9 @@ class ProgramStudi extends Model
     {
         return $this->hasMany(Material::class);
     }
+
+    public function threads()
+    {
+        return $this->hasMany(Thread::class, 'program_studi', 'id');
+    }
 }

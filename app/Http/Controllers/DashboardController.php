@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\ProgramStudi;
 use App\Models\Role;
 use App\Models\User;
@@ -22,6 +23,32 @@ class DashboardController extends Controller
     {
         $users = User::get();
         $programStudi = ProgramStudi::count();
+
+        $prodiCounts = User::whereHas('roles', function ($q) {
+            $q->where('name', 'student');
+        })->select('program_studi_id', DB::raw('count(*) as total'))
+        ->groupBy('program_studi_id')
+        ->get();
+                
+        $activityUsers = User::withCount('submissions')
+            ->whereHas('roles', fn($q) => $q->where('name', 'student'))
+            ->with('programStudi')
+            ->get();
+
+        $grouped = $activityUsers->groupBy('program_studi_id');
+
+        $labels = [];
+        $courseData = [];
+
+        foreach ($grouped as $prodiId => $users) {
+            $prodiName = $users->first()->programStudi->name ?? 'Unknown';
+            $labels[] = $prodiName;
+            $courseData[] = $users->sum('submissions_count');
+        }
+
+        $labels = $prodiCounts->pluck('program_studi_id');
+        $enrollData = $prodiCounts->pluck('total');
+
         // Hitung total user dengan role 'student'
         $totalUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'student');
@@ -30,10 +57,12 @@ class DashboardController extends Controller
         return view('admin.dashboard', [
             'users' => $users,
             'totalUsers' => $totalUsers,
-            'programStudi' => $programStudi
-        ]);
+            'programStudi' => $programStudi,
+            'labels' => $labels,
+            'enrollData' => $enrollData,
+            'courseData' => $courseData,
+         ]);
     }
-
 
     public function users(Request $request)
     {
@@ -68,6 +97,7 @@ class DashboardController extends Controller
             'activeToday' => $activeToday,
             'activeGrowth' => $activeGrowth,
             'adminUsers' => $adminUsers,
+
         ]);
     }
     public function store(Request $request)
