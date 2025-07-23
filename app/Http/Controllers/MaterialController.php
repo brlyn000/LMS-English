@@ -115,9 +115,11 @@ class MaterialController extends Controller
 
     public function show($id)
     {
-        $material = Material::findOrFail($id); // Pastikan data ditemukan atau error 404
+        $material = Material::findOrFail($id); // Pastikan data d
+        // itemukan atau error 404
+        $module = Module::findOrFail($id);
 
-        return view('classes.material.show', compact('material'));
+        return view('classes.material.show', compact('material', 'module'));
     }
 
     // Hapus materi

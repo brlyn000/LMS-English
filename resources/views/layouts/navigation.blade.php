@@ -5,8 +5,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-white font-bold text-xl">
-                        <!-- <img src="{{ asset('images/garuda.png') }}" alt="Logo" class="w-8 h-8"> -->
-                         <i class="fas fa-graduation-cap text-xl"></i>
+                        <img src="{{ asset('favicon.png') }}" alt="Logo" class="w-12 h-12">
                         <span>Real World</span>
                     </a>
                 </div>

@@ -4,7 +4,7 @@
             <!-- Left Banner / Illustration Side -->
             <div class="hidden md:flex bg-red-600 text-white flex-col items-center justify-center p-10">
                 <div class="text-left">
-                    <i class="fas fa-graduation-cap text-4xl"></i>
+                    <img src="{{ asset('favicon.png') }}" alt="Logo" class="w-20 h-20">
                     <h2 class="text-3xl font-bold tracking-wide">Welcome to Real World</h2>
                     <p class="mt-4 text-lg">For English Class Students of:</p>
                     <ul class="mt-4 text-sm list-disc list-inside">

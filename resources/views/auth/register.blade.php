@@ -6,7 +6,7 @@
             <div class="bg-red-600 text-white p-10 flex flex-col justify-center relative">
                 <h2 class="text-4xl font-bold mb-4 ">Welcome to Red-White LMS</h2>
                 <p class="text-lg">Register to get access to your class and discussion forum. Let's learn and grow together!</p>
-                <i class="fas fa-graduation-cap text-9xl text-center mt-10"></i>
+                    <img src="{{ asset('favicon.png') }}" alt="Logo" class="w-20 h-20">
             </div>
 
             <!-- Registration Form -->

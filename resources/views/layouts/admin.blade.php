@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS Admin - {{ $title ?? 'Dashboard' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <!-- Font Awesome -->
     <!-- Favicon -->
     <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -21,10 +21,8 @@
         <div class="flex flex-col h-full">
             <!-- Brand Logo -->
             <div class="p-6 border-b border-red-600 flex items-center justify-center">
-                <a href="{{ route('dashboard') }}" class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-red-700 font-bold mr-3 shadow-md">
-                        <i class="fas fa-graduation-cap text-xl"></i>
-                    </div>
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-5">
+                    <img src="{{ asset('favicon.png') }}" alt="Logo" class="w-16 h-16">
                     <h1 class="text-xl font-bold text-white tracking-tight">Real<span class="font-extrabold">World</span></h1>
                 </a>
             </div>
