@@ -6,6 +6,9 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'English-Dashboard') }}</title>
+        <!-- Favicon -->
+         <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png">
+
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
