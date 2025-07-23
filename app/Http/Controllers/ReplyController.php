@@ -30,6 +30,7 @@ class ReplyController extends Controller
             'image' => $imagePath,
             'user_id' => auth()->id(),
         ]);
+        logActivity('Thread', 'User add thread :'. $request->subject);
 
         return back()->with('success', 'Balasan berhasil dikirim.');
     }

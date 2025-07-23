@@ -31,6 +31,8 @@ class AuthenticatedSessionController extends Controller
         auth()->user()->update([
             'last_login_at' => now(),
         ]);
+        logActivity('Login', 'User berhasil login.');
+
 
         return redirect()->intended(route('dashboard'));
     }

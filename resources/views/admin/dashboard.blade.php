@@ -121,98 +121,10 @@
     </div>
 
     <!-- Recent Activity and Upcoming Classes -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-1 gap-8">
         <!-- Recent Forum Activity -->
-        <div class="bg-white rounded-xl shadow-lg p-6 lg:col-span-2">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <span class="w-1 h-6 bg-red-500 mr-2 rounded-full"></span>
-                    Recent Forum Activity
-                </h3>
-                <a href="#" class="text-sm text-red-600 font-medium hover:underline flex items-center">
-                    View all <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                </a>
-            </div>
-            <div class="space-y-4">
-                @foreach([1,2,3] as $item)
-                <div class="flex items-start p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors group">
-                    <div class="flex-shrink-0 mt-1">
-                        <div class="relative">
-                            <img src="https://ui-avatars.com/api/?name=Student+{{$item}}&background=random" alt="" class="w-10 h-10 rounded-full">
-                            <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                        </div>
-                    </div>
-                    <div class="ml-4 flex-1 min-w-0">
-                        <div class="flex justify-between items-baseline">
-                            <h4 class="text-sm font-semibold text-gray-900 truncate">Student {{$item}}</h4>
-                            <span class="text-xs text-gray-500 whitespace-nowrap ml-2">2{{$item}}m ago</span>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Posted in <span class="text-red-600 font-medium">Accounting 101</span></p>
-                        <p class="text-sm text-gray-500 mt-2 truncate group-hover:text-gray-700">"I have a question about the homework assignment for chapter 3 regarding the new accounting principles we learned..."</p>
-                        <div class="flex items-center mt-3 space-x-4">
-                            <span class="inline-flex items-center text-xs text-gray-500 hover:text-red-600">
-                                <i class="far fa-comment mr-1"></i>
-                                <span>3 replies</span>
-                            </span>
-                            <span class="inline-flex items-center text-xs text-gray-500 hover:text-red-600">
-                                <i class="far fa-thumbs-up mr-1"></i>
-                                <span>5 likes</span>
-                            </span>
-                            <button class="text-xs text-red-600 hover:text-red-800 ml-auto">
-                                <i class="fas fa-ellipsis-h"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
+            <x-recent-activity :activities="$activities" />
 
-        <!-- Upcoming Classes -->
-        <div class="bg-white rounded-xl shadow-lg p-6">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <span class="w-1 h-6 bg-red-500 mr-2 rounded-full"></span>
-                    Upcoming Classes
-                </h3>
-                <a href="#" class="text-sm text-red-600 font-medium hover:underline flex items-center">
-                    View Calendar <i class="fas fa-chevron-right ml-1 text-xs"></i>
-                </a>
-            </div>
-            <div class="space-y-4">
-                @foreach([
-                    ['course' => 'Database Systems', 'time' => 'Today, 10:00 AM', 'program' => 'IT', 'instructor' => 'Dr. Smith', 'color' => 'blue'],
-                    ['course' => 'Financial Accounting', 'time' => 'Tomorrow, 9:00 AM', 'program' => 'Accounting', 'instructor' => 'Prof. Johnson', 'color' => 'red'],
-                    ['course' => 'Office Management', 'time' => 'Tomorrow, 1:00 PM', 'program' => 'Office Admin', 'instructor' => 'Ms. Williams', 'color' => 'green'],
-                ] as $class)
-                <div class="p-4 border border-gray-100 rounded-lg hover:shadow-sm transition-shadow">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="text-sm font-semibold text-gray-900">{{ $class['course'] }}</h4>
-                            <div class="flex items-center mt-1">
-                                <span class="text-xs px-2 py-1 bg-{{$class['color']}}-100 text-{{$class['color']}}-800 rounded-full">{{ $class['program'] }}</span>
-                            </div>
-                        </div>
-                        <div class="text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-full">
-                            <i class="far fa-clock mr-1"></i> {{ explode(',', $class['time'])[0] }}
-                        </div>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2"><i class="fas fa-chalkboard-teacher mr-1"></i> {{ $class['instructor'] }}</p>
-                    <div class="mt-3 flex justify-between items-center">
-                        <div class="flex -space-x-2">
-                            @for($i=0; $i<3; $i++)
-                            <img src="https://ui-avatars.com/api/?name=S{{$i}}&background=random" alt="" class="w-6 h-6 rounded-full border-2 border-white hover:z-10 hover:scale-110 transition-transform">
-                            @endfor
-                            <div class="w-6 h-6 rounded-full bg-gray-100 border-2 border-white flex items-center justify-center text-xs text-gray-500 hover:scale-110 transition-transform">+12</div>
-                        </div>
-                        <button class="text-xs bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1.5 rounded-lg hover:shadow-md transition-all flex items-center">
-                            <i class="fas fa-video mr-1"></i> Join
-                        </button>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
     </div>
 
     @push('scripts')
@@ -227,7 +139,7 @@
             type: 'bar',
             data: {
 
-                labels: ['Accounting', 'Information Technology', 'Office Administration', 'Mechanical Technology'],
+                labels: labels,
                 datasets: [{
                     label: 'Students',
                     data: enrollData,

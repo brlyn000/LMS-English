@@ -10,6 +10,14 @@ use Illuminate\Support\Facades\Storage;
 
 class SubmissionController extends Controller
 {
+    public function index($material_id)
+    {
+        $material = Material::findOrFail($material_id);
+        $submissions = Submission::with('user')->where('material_id', $material_id)->get();
+    
+        return view('admin.submissions.index', compact('material', 'submissions'));
+    }
+    
     public function store(Request $request, $material_id)
     {
         $material = Material::findOrFail($material_id);
@@ -17,6 +25,11 @@ class SubmissionController extends Controller
         // Validasi hanya untuk type tugas
         if ($material->type !== 'Tugas') {
             return redirect()->back()->with('error', 'Materi ini bukan tugas.');
+        }
+
+        // Cek apakah user sudah pernah submit
+        if (Submission::where('material_id', $material->id)->where('user_id', Auth::id())->exists()) {
+            return back()->with('error', 'Tugas sudah dikumpulkan.');
         }
 
         $request->validate([
@@ -27,7 +40,7 @@ class SubmissionController extends Controller
         // Simpan file
         $path = $request->file('file')->store('submissions', "public");
 
-
+        // Buat submission baru
         $submission = Submission::create([
             'material_id' => $material->id,
             'user_id' => Auth::id(),
@@ -36,9 +49,8 @@ class SubmissionController extends Controller
             'submitted_at' => now(),
         ]);
 
-        if (Submission::where('material_id', $material->id)->where('user_id', Auth::id())->exists()) {
-            return back()->with('error', 'Tugas sudah dikumpulkan.');
-        }
+        // Log aktivitas
+        logActivity('Submission', 'User mengumpulkan tugas: ' . $material->title);
 
         return redirect()
             ->route('material.show', $material->id)
@@ -46,13 +58,7 @@ class SubmissionController extends Controller
             ->with('submission', $submission);
     }
 
-    public function index($material_id)
-    {
-        $material = Material::findOrFail($material_id);
-        $submissions = Submission::with('user')->where('material_id', $material_id)->get();
 
-        return view('admin.submissions.index', compact('material', 'submissions'));
-    }
 
     public function destroy($id)
     {

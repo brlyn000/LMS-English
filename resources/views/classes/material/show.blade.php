@@ -37,19 +37,21 @@
                 <div class="p-6 sm:p-8 lg:p-12">
                     @if($material->type === 'Video')
                         <!-- Video Player -->
-                        <div class="relative pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black mb-8">
-                            <video controls class="absolute top-0 left-0 w-full h-full">
-                                <source src="{{ asset('storage/' . $material->file_path) }}" type="video/mp4">
-                                Browser Anda tidak mendukung pemutaran video.
-                            </video>
-                            <div class="absolute inset-0 flex items-center justify-center">
-                                <div class="w-20 h-20 bg-red-600 bg-opacity-80 rounded-full flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                                    </svg>
-                                </div>
+                    <div class="relative pb-[56.25%] h-0 rounded-xl overflow-hidden bg-black mb-8">
+                        <video controls class="absolute top-0 left-0 w-full h-full z-10">
+                            <source src="{{ asset('storage/' . $material->file_path) }}" type="video/mp4">
+                            Browser Anda tidak mendukung pemutaran video.
+                        </video>
+
+                        <!-- Overlay (tidak menghalangi klik) -->
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+                            <div class="w-20 h-20 bg-red-600 bg-opacity-80 rounded-full flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                                </svg>
                             </div>
                         </div>
+                    </div>
                     @elseif($material->type === 'Dokumen')
                         <!-- Document Viewer -->
                         <div class="h-96 bg-gray-50 rounded-xl flex flex-col items-center justify-center p-6 mb-8 border-2 border-dashed border-gray-200">

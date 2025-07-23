@@ -37,7 +37,6 @@
                     <thead class="bg-gray-50">
                         <tr>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Judul Modul</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Dibuat</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                         </tr>
@@ -57,12 +56,6 @@
                                         <div class="text-sm text-gray-500">{{ Str::limit($modul->description, 50) }}</div>
                                     </div>
                                 </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {{ $modul->type === 'teori' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800' }}">
-                                    {{ ucfirst($modul->type) }}
-                                </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ $modul->created_at->format('d M Y') }}

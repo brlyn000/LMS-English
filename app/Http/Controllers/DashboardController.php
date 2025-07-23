@@ -5,6 +5,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\ActivityLog;
 use App\Models\ProgramStudi;
 use App\Models\Role;
 use App\Models\User;
@@ -41,18 +42,31 @@ class DashboardController extends Controller
         $courseData = [];
 
         foreach ($grouped as $prodiId => $users) {
-            $prodiName = $users->first()->programStudi->name ?? 'Unknown';
+            $prodiName = $users->first()->programStudi->nama_prodi ?? 'Unknown';
             $labels[] = $prodiName;
             $courseData[] = $users->sum('submissions_count');
         }
 
-        $labels = $prodiCounts->pluck('program_studi_id');
+        // Ambil ID prodi dari hasil query
+        $prodiIds = $prodiCounts->pluck('program_studi_id');
+
+        // Ambil nama prodi sesuai ID
+        $prodiNames = ProgramStudi::whereIn('id', $prodiIds)->pluck('nama_prodi', 'id');
         $enrollData = $prodiCounts->pluck('total');
+
+        // Ubah labels menjadi array nama prodi
+        $labels = $prodiCounts->map(function ($item) use ($prodiNames) {
+            return $prodiNames[$item->program_studi_id] ?? 'Unknown';
+        });
 
         // Hitung total user dengan role 'student'
         $totalUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'student');
         })->count();
+
+        // Recent Activity
+        $activities = ActivityLog::with('user')->latest()->take(10)->get(); // recent 10
+
 
         return view('admin.dashboard', [
             'users' => $users,
@@ -61,6 +75,7 @@ class DashboardController extends Controller
             'labels' => $labels,
             'enrollData' => $enrollData,
             'courseData' => $courseData,
+            'activities'=> $activities,
          ]);
     }
 
@@ -120,7 +135,7 @@ class DashboardController extends Controller
 
         $user->roles()->attach(3); // Role ID 3 sebagai default (misal: mahasiswa)
 
-        return redirect()->route('admin.users')->with('success', 'User berhasil ditambahkan.');
+        return redirect()->route('admin.users')->with('success', 'User added successfully.');
     }
 
     public function search(Request $request)
@@ -195,6 +210,63 @@ class DashboardController extends Controller
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
-        return redirect()->route('admin.users')->with('success', 'User berhasil dihapus.');
+        return redirect()->route('admin.users')->with('success', 'User has been successfully deleted.');
     }
+
+    public function nilaiTI()
+    {
+        $students = User::with(['submissions.material', 'programStudi'])
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'student');
+            })
+            ->whereHas('programStudi', function ($query) {
+                $query->where('nama_prodi', 'Teknologi Informasi');
+            })
+            ->get();
+
+        return view('admin.grades.ti', compact('students'));
+    }
+
+    public function nilaiTM()
+    {
+        $students = User::with(['submissions.material', 'programStudi'])
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'student');
+            })
+            ->whereHas('programStudi', function ($query) {
+                $query->where('nama_prodi', 'Teknologi Mesin');
+            })
+            ->get();
+
+        return view('admin.grades.tm', compact('students'));
+    }
+
+    public function nilaiAK()
+    {
+        $students = User::with(['submissions.material', 'programStudi'])
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'student');
+            })
+            ->whereHas('programStudi', function ($query) {
+                $query->where('nama_prodi', 'Akuntansi');
+            })
+            ->get();
+
+        return view('admin.grades.ak', compact('students'));
+    }
+
+        public function nilaiAP()
+    {
+        $students = User::with(['submissions.material', 'programStudi'])
+            ->whereHas('roles', function ($query) {
+                $query->where('name', 'student');
+            })
+            ->whereHas('programStudi', function ($query) {
+                $query->where('nama_prodi', 'Administrasi Perkantoran');
+            })
+            ->get();
+
+        return view('admin.grades.ap', compact('students'));
+    }
+
 }

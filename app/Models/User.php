@@ -69,4 +69,9 @@ class User extends Authenticatable
         return $this->hasMany(Submission::class);
     }
 
+    public function activity()
+    {
+        return $this->belongsToMany(ActivityLog::class, 'user_id');
+    }
+
 }
