@@ -1,5 +1,5 @@
 
-<div class="relative bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-2xl">
+<div class="relative bg-white mb-20 rounded-2xl shadow-xl overflow-hidden border border-gray-100 transition-all duration-300 hover:shadow-2xl">
     <div class="flex flex-col lg:flex-row">
         <!-- Profile Left Section (Gradient Background) -->
         <div class="lg:w-1/3 bg-gradient-to-br from-red-600 to-red-800 p-8 flex items-center justify-center relative">

@@ -83,30 +83,30 @@
             @else
                 <!-- Materials List -->
                 <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-                    <!-- Table Header -->
-                    <div class="grid grid-cols-12 gap-4 px-6 py-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
-                        <div class="col-span-6 md:col-span-7 font-semibold text-red-800 flex items-center">
+                    <!-- Desktop Table Header -->
+                    <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-4 bg-gradient-to-r from-red-50 to-red-100 border-b border-red-200">
+                        <div class="col-span-7 font-semibold text-red-800 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M9.504 1.132a1 1 0 01.992 0l1.75 1a1 1 0 11-.992 1.736L10 3.152l-1.254.716a1 1 0 11-.992-1.736l1.75-1zM5.618 4.504a1 1 0 01-.372 1.364L5.016 6l.23.132a1 1 0 11-.992 1.736L4 7.723V8a1 1 0 01-2 0V6a.996.996 0 01.52-.878l1.734-.99a1 1 0 011.364.372zm8.764 0a1 1 0 011.364-.372l1.733.99A1.002 1.002 0 0118 6v2a1 1 0 11-2 0v-.277l-.254.145a1 1 0 11-.992-1.736l.23-.132-.23-.132a1 1 0 01-.372-1.364zm-7 4a1 1 0 011.364-.372L10 8.848l1.254-.716a1 1 0 11.992 1.736L11 10.58V12a1 1 0 11-2 0v-1.42l-1.246-.712a1 1 0 01-.372-1.364zM3 11a1 1 0 011 1v1.42l1.246.712a1 1 0 11-.992 1.736l-1.75-1A1 1 0 012 14v-2a1 1 0 011-1zm14 0a1 1 0 011 1v2a1 1 0 01-.504.868l-1.75 1a1 1 0 11-.992-1.736L16 13.42V12a1 1 0 011-1zm-9.618 5.504a1 1 0 011.364-.372l.254.145V16a1 1 0 112 0v.277l.254-.145a1 1 0 11.992 1.736l-1.735.992a.995.995 0 01-1.022 0l-1.735-.992a1 1 0 01-.372-1.364z" clip-rule="evenodd" />
                             </svg>
                             Learning Materials
                         </div>
-                        <div class="col-span-3 md:col-span-2 font-semibold text-red-800">Type</div>
-                        <div class="col-span-3 md:col-span-2 font-semibold text-red-800 hidden md:flex items-center">
+                        <div class="col-span-2 font-semibold text-red-800">Type</div>
+                        <div class="col-span-2 font-semibold text-red-800 flex items-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
                             </svg>
                             Date Added
                         </div>
-                        <div class="col-span-3 md:col-span-1 font-semibold text-red-800 text-right">Actions</div>
+                        <div class="col-span-1 font-semibold text-red-800 text-right">Actions</div>
                     </div>
 
                     <!-- Materials List Items -->
                     <div class="divide-y divide-gray-100">
                         @foreach($materials as $material)
-                        <div class="grid grid-cols-12 gap-4 px-6 py-5 hover:bg-red-50/50 transition-colors duration-200 group transform hover:-translate-y-0.5">
-                            <!-- Title and Description -->
-                            <div class="col-span-6 md:col-span-7">
+                        <!-- Desktop Layout -->
+                        <div class="hidden md:grid grid-cols-12 gap-4 px-6 py-5 hover:bg-red-50/50 transition-colors duration-200 group">
+                            <div class="col-span-7">
                                 <a href="{{ route('material.show', $material->id) }}" class="flex items-center space-x-4">
                                     <div class="flex-shrink-0 h-12 w-12 rounded-lg bg-gradient-to-br from-red-100 to-white flex items-center justify-center shadow-sm">
                                         @if($material->type === 'video')
@@ -129,25 +129,19 @@
                                     </div>
                                 </a>
                             </div>
-
-                            <!-- Type -->
-                            <div class="col-span-3 md:col-span-2 flex items-center">
+                            <div class="col-span-2 flex items-center">
                                 <span class="px-3 py-1 text-xs font-semibold rounded-full 
                                     {{ $material->type === 'assignment' ? 'bg-yellow-100 text-yellow-800' : ($material->type === 'video' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800') }}">
                                     {{ ucfirst($material->type) }}
                                 </span>
                             </div>
-
-                            <!-- Date -->
-                            <div class="col-span-3 md:col-span-2 hidden md:flex items-center">
+                            <div class="col-span-2 flex items-center">
                                 <span class="text-sm text-gray-500">{{ $material->created_at->format('M d, Y') }}</span>
                             </div>
-
-                            <!-- Actions -->
-                            <div class="col-span-3 md:col-span-1 flex items-center justify-end space-x-1">
+                            <div class="col-span-1 flex items-center justify-end space-x-1">
                                 <a href="{{ route('material.show', $material->id) }}" 
                                    class="p-2 rounded-full bg-white text-gray-500 hover:text-red-600 hover:bg-red-100 transition-colors duration-200 shadow-sm border border-gray-200 hover:border-red-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
@@ -155,7 +149,7 @@
                                 @if(in_array('admin', $userRoles) || in_array('instructor', $userRoles))
                                 <a href="{{ route('admin.material.edit', $material->id) }}" 
                                    class="p-2 rounded-full bg-white text-gray-500 hover:text-blue-600 hover:bg-blue-100 transition-colors duration-200 shadow-sm border border-gray-200 hover:border-blue-200">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
                                 </a>
@@ -165,13 +159,68 @@
                                     <button type="submit" 
                                             onclick="return confirm('Are you sure you want to delete this material?')"
                                             class="p-2 rounded-full bg-white text-gray-500 hover:text-red-600 hover:bg-red-100 transition-colors duration-200 shadow-sm border border-gray-200 hover:border-red-200">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
                                 </form>
                                 @endif
                             </div>
+                        </div>
+
+                        <!-- Mobile Layout -->
+                        <div class="md:hidden p-4 hover:bg-red-50/50 transition-colors duration-200">
+                            <a href="{{ route('material.show', $material->id) }}" class="block">
+                                <div class="flex items-start space-x-3">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-gradient-to-br from-red-100 to-white flex items-center justify-center shadow-sm">
+                                        @if($material->type === 'video')
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                            </svg>
+                                        @elseif($material->type === 'document')
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                            </svg>
+                                        @else
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                            </svg>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h3 class="text-base font-semibold text-gray-800 truncate">{{ $material->title }}</h3>
+                                        <p class="text-sm text-gray-500 line-clamp-2 mt-1">{{ $material->description }}</p>
+                                        <div class="flex items-center justify-between mt-2">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                                {{ $material->type === 'assignment' ? 'bg-yellow-100 text-yellow-800' : ($material->type === 'video' ? 'bg-blue-100 text-blue-800' : 'bg-red-100 text-red-800') }}">
+                                                {{ ucfirst($material->type) }}
+                                            </span>
+                                            <span class="text-xs text-gray-400">{{ $material->created_at->format('M d, Y') }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                            @if(in_array('admin', $userRoles) || in_array('instructor', $userRoles))
+                            <div class="flex justify-end space-x-2 mt-3 pt-3 border-t border-gray-100">
+                                <a href="{{ route('admin.material.edit', $material->id) }}" 
+                                   class="p-2 rounded-full bg-white text-gray-500 hover:text-blue-600 hover:bg-blue-100 transition-colors duration-200 shadow-sm border border-gray-200">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                <form action="{{ route('admin.material.destroy', $material->id) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" 
+                                            onclick="return confirm('Are you sure you want to delete this material?')"
+                                            class="p-2 rounded-full bg-white text-gray-500 hover:text-red-600 hover:bg-red-100 transition-colors duration-200 shadow-sm border border-gray-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+                            @endif
                         </div>
                         @endforeach
                     </div>

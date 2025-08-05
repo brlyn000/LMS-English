@@ -32,15 +32,18 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'nim' => ['required', 'int'],
+            'nim' => ['required', 'integer', 'unique:'.User::class],
             'program_studi_id' =>['required','int'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $programStudi = \App\Models\ProgramStudi::find($request->program_studi_id);
+        
         $user = User::create([
             'name' => $request->name,
             'nim'=> $request ->nim,
+            'program_studi' => $programStudi->kode_prodi ?? 'TI',
             'program_studi_id' => $request ->program_studi_id,
             'email' => $request->email,
             'password' => Hash::make($request->password),

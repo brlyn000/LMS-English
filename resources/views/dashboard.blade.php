@@ -1,56 +1,22 @@
 <x-app-layout>
-    <!-- 
-        =============================================
-        HEADER SECTION 
-        =============================================
-        - Gradient red header with white text
-        - Responsive layout with program study indicator
-        - Glowing effect on the program study badge
-    -->
     <x-slot name="header">
         <x-dashboard-user.header>
             {{ __('Dashboard') }}
         </x-dashboard-user.header>
     </x-slot>
 
-    <!-- 
-        =============================================
-        MAIN CONTENT AREA 
-        =============================================
-        - Gradient background from red to white
-        - Responsive padding and layout
-    -->
     <div class="bg-gradient-to-b from-red-50 to-white min-h-screen py-12 -mt-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
             
-            <!-- 
-                =============================================
-                USER PROFILE CARD 
-                =============================================
-                - Glowing border effect
-                - Split layout with gradient red profile section
-                - Progress indicators and quick actions
-            -->
-        
-        <x-dashboard-user.profile-card 
-            :course-completion="$courseCompletion" 
-            :assignment-submission="$assignmentSubmission" 
-            :forum-participation="$forumParticipation"
-            :card-home="$card_home"
-        />
-        
+            <x-dashboard-user.profile-card 
+                :course-completion="$courseCompletion" 
+                :assignment-submission="$assignmentSubmission" 
+                :forum-participation="$forumParticipation"
+                :card-home="$card_home"
+                :materials="$materials"
+            />
 
-
-            <!-- 
-                =============================================
-                LEARNING RESOURCES SECTION 
-                =============================================
-                - Class cards with hover effects
-                - Glowing borders on hover
-                - Responsive grid layout
-            -->
             <div class="space-y-8">
-                <!-- Section Header -->
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                     <h3 class="text-2xl font-bold text-gray-800 border-l-4 border-red-600 pl-4 flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -60,7 +26,6 @@
                     </h3>
                 </div>
 
-                <!-- Class Cards Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach ($card_home as $card)
                         <x-dashboard-user.card-content :card="$card" />
@@ -68,14 +33,6 @@
                 </div>
             </div>
 
-            <!-- 
-                =============================================
-                RECENT ACTIVITY SECTION 
-                =============================================
-                - Timeline-style activity feed
-                - Animated hover effects
-                - Responsive layout
-            -->
             <x-recent-activity :activities="$activities" />
 
         </div>

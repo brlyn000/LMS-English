@@ -12,6 +12,15 @@
             <!-- Registration Form -->
             <div class="bg-white p-10">
                 <h1 class="text-3xl font-semibold text-red-600 mb-6">Create Your Account</h1>
+                
+                @if($errors->has('nim'))
+                    <x-alert type="error" message="NIM {{ old('nim') }} sudah terdaftar. Silakan gunakan NIM yang berbeda." />
+                @endif
+                
+                @if($errors->has('email'))
+                    <x-alert type="error" message="Email {{ old('email') }} sudah terdaftar. Silakan gunakan email yang berbeda." />
+                @endif
+                
                 <form method="POST" action="{{ route('register') }}">
                     @csrf
 
@@ -34,10 +43,10 @@
                             <x-input-label for="program_studi_id" :value="__('Program Studi')" />
                             <select id="program_studi_id" name="program_studi_id" required class="block mt-1 w-full rounded border-red-600  focus:ring-red-600 text-center">
                                 <option value="">Select Program Studi</option>
-                                <option value="2">Akuntansi</option>
-                                <option value="3">Administrasi Perkantoran</option>
-                                <option value="4">Teknologi Mesin</option>
                                 <option value="1">Teknologi Informasi</option>
+                                <option value="2">Teknologi Mesin</option>
+                                <option value="3">Akuntansi</option>
+                                <option value="4">Administrasi Perkantoran</option>
                             </select>
                             <x-input-error :messages="$errors->get('program_studi_id')" class="mt-2" />
                         </div>

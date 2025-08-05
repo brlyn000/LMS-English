@@ -15,8 +15,10 @@ class CreateMaterialsTable extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->foreignId('module_id')->constrained()->onDelete('cascade');
-            $table->enum('type', ['tugas', 'materi']);
-            $table->string('class_prodi_id'); // TI, TM, AK, AP
+            $table->string('file_path')->nullable();
+            $table->enum('type', ['Dokumen', 'Video', 'Tugas', 'Link']);
+            $table->unsignedBigInteger('class_prodi_id');
+            $table->foreign('class_prodi_id')->references('id')->on('class_prodi')->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // pembuat
             $table->timestamps();
         });

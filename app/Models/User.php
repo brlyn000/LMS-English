@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'nim',
+        'program_studi',
         'program_studi_id',
         'last_login_at',
     ];
@@ -45,7 +46,6 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
             'last_login_at' => 'datetime',
         ];
     }
@@ -71,7 +71,7 @@ class User extends Authenticatable
 
     public function activity()
     {
-        return $this->belongsToMany(ActivityLog::class, 'user_id');
+        return $this->hasMany(ActivityLog::class);
     }
 
 }

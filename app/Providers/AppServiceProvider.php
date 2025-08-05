@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\View\Components\AdminLayout;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,9 +19,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::component('layouts-admin', AdminLayout::class);
-
+        // Suppress Symfony Console deprecation warnings
+        error_reporting(E_ALL & ~E_USER_DEPRECATED);
+        
+        // Set custom error handler for deprecation warnings
+        set_error_handler(function ($severity, $message, $file, $line) {
+            if (strpos($message, 'symfony/console') !== false && strpos($message, 'deprecated') !== false) {
+                return true; // Suppress Symfony Console deprecation warnings
+            }
+            return false; // Let other errors be handled normally
+        }, E_USER_DEPRECATED);
     }
-
-    
 }

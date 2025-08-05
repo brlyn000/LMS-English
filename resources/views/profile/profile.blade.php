@@ -141,8 +141,8 @@
                 <div class="mb-6">
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-sm font-medium text-gray-700">Task Completion</span>
-                        <span class="text-sm font-bold {{ $userSubmissions/$totalAssignments >= 0.75 ? 'text-green-600' : ($userSubmissions/$totalAssignments >= 0.5 ? 'text-yellow-500' : 'text-red-600') }}">
-                            {{ round(($userSubmissions/$totalAssignments)*100) }}%
+                        <span class="text-sm font-bold {{ $totalAssignments > 0 && $userSubmissions/$totalAssignments >= 0.75 ? 'text-green-600' : ($totalAssignments > 0 && $userSubmissions/$totalAssignments >= 0.5 ? 'text-yellow-500' : 'text-red-600') }}">
+                            {{ $totalAssignments > 0 ? round(($userSubmissions/$totalAssignments)*100) : 0 }}%
                         </span>
                     </div>
                     <div class="relative pt-1">
@@ -154,10 +154,10 @@
                             </div>
                         </div>
                         <div class="overflow-hidden h-4 mb-4 text-xs flex rounded-full bg-gray-200">
-                            <div style="width:{{ ($userSubmissions/$totalAssignments)*100 }}%" 
+                            <div style="width:{{ $totalAssignments > 0 ? ($userSubmissions/$totalAssignments)*100 : 0 }}%" 
                                 class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center 
-                                        {{ $userSubmissions/$totalAssignments >= 0.75 ? 'bg-gradient-to-r from-green-400 to-green-600' : 
-                                        ($userSubmissions/$totalAssignments >= 0.5 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' : 
+                                        {{ $totalAssignments > 0 && $userSubmissions/$totalAssignments >= 0.75 ? 'bg-gradient-to-r from-green-400 to-green-600' : 
+                                        ($totalAssignments > 0 && $userSubmissions/$totalAssignments >= 0.5 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' : 
                                         'bg-gradient-to-r from-red-400 to-red-600') }}">
                             </div>
                         </div>
@@ -209,7 +209,7 @@
                 </div>
 
                 <!-- Badge Section -->
-                @if($userSubmissions/$totalAssignments >= 0.9)
+                @if($totalAssignments > 0 && $userSubmissions/$totalAssignments >= 0.9)
                 <div class="mt-4 flex justify-center">
                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-yellow-100 to-yellow-50 text-yellow-800 border border-yellow-200">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

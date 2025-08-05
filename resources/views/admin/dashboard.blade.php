@@ -1,4 +1,4 @@
-<x-layouts-admin header="LMS Dashboard">
+<x-admin-layout>
     <!-- Quick Stats with Modern Design -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Students Card -->
@@ -41,9 +41,9 @@
             <div class="flex justify-between items-start z-10 relative">
                 <div>
                     <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Forum Discussions</p>
-                    <h3 class="text-3xl font-bold text-gray-800 mt-1">1,276</h3>
+                    <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ number_format($forumDiscussions) }}</h3>
                     <p class="mt-2 text-sm text-green-600 flex items-center">
-                        <span class="bg-green-100 px-2 py-1 rounded-full">42 new today</span>
+                        <span class="bg-green-100 px-2 py-1 rounded-full">Active discussions</span>
                     </p>
                 </div>
                 <div class="p-3 rounded-xl bg-gradient-to-br from-red-50 to-white text-red-500 shadow-inner">
@@ -58,9 +58,9 @@
             <div class="flex justify-between items-start z-10 relative">
                 <div>
                     <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Completion Rate</p>
-                    <h3 class="text-3xl font-bold text-gray-800 mt-1">78%</h3>
+                    <h3 class="text-3xl font-bold text-gray-800 mt-1">{{ $completionRate }}%</h3>
                     <p class="mt-2 text-sm text-green-600 flex items-center">
-                        <span class="bg-green-100 px-2 py-1 rounded-full">5% improvement</span>
+                        <span class="bg-green-100 px-2 py-1 rounded-full">Overall progress</span>
                     </p>
                 </div>
                 <div class="p-3 rounded-xl bg-gradient-to-br from-red-50 to-white text-red-500 shadow-inner">
@@ -99,23 +99,8 @@
             <div class="h-80">
                 <canvas id="courseChart"></canvas>
             </div>
-            <div class="mt-4 grid grid-cols-2 gap-2 text-sm">
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-red-500 rounded-full mr-2"></span>
-                    <span>Accounting</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-blue-500 rounded-full mr-2"></span>
-                    <span>IT</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-green-500 rounded-full mr-2"></span>
-                    <span>Office Admin</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></span>
-                    <span>Mechanical</span>
-                </div>
+            <div class="mt-4 grid grid-cols-2 gap-2 text-sm" id="chartLegend">
+                <!-- Legend will be populated by JavaScript -->
             </div>
         </div>
     </div>
@@ -142,7 +127,7 @@
                 labels: labels,
                 datasets: [{
                     label: 'Students',
-                    data: enrollData,
+                    data: enrollData.length > 0 ? enrollData : [0, 0, 0, 0],
                     backgroundColor: [
                         'rgba(229, 62, 62, 0.8)',
                         'rgba(49, 130, 206, 0.8)',
@@ -215,9 +200,9 @@
         const courseChart = new Chart(courseCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Accounting', 'Information Technology', 'Office Administration', 'Mechanical Technology'],
+                labels: labels.length > 0 ? labels : ['No Data'],
                 datasets: [{
-                    data: courseData,
+                    data: courseData.length > 0 ? courseData : [1],
                     backgroundColor: [
                         'rgba(229, 62, 62, 0.8)',
                         'rgba(49, 130, 206, 0.8)',
@@ -252,6 +237,27 @@
                 cutout: '75%'
             }
         });
+        
+        // Populate legend dynamically
+        const legendContainer = document.getElementById('chartLegend');
+        const colors = ['bg-red-500', 'bg-blue-500', 'bg-green-500', 'bg-yellow-500'];
+        let legendHTML = '';
+        
+        if (labels.length > 0) {
+            labels.forEach((label, index) => {
+                const colorClass = colors[index % colors.length];
+                legendHTML += `
+                    <div class="flex items-center">
+                        <span class="w-3 h-3 ${colorClass} rounded-full mr-2"></span>
+                        <span class="text-xs">${label}</span>
+                    </div>
+                `;
+            });
+        } else {
+            legendHTML = '<div class="col-span-2 text-center text-gray-500 text-xs">No data available</div>';
+        }
+        
+        legendContainer.innerHTML = legendHTML;
     </script>
     @endpush
-</x-layouts-admin>
+</x-admin-layout>

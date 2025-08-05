@@ -1,4 +1,4 @@
-<x-layouts-admin>
+<x-admin-layout>
     <div class="min-h-screen bg-gray-50 p-6">
         <!-- Header Section -->
         <div class="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -113,4 +113,4 @@
         </div>
         @endforeach
     </div>
-</x-layouts-admin>
+</x-admin-layout>

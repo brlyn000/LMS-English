@@ -12,7 +12,7 @@ class CardHomeController extends Controller
 {
     public function index()
     {
-        $card_home = CardHome::where('status', 'Active')->orderBy('name')->get();
+        $card_home = CardHome::where('status', '=', 'Active')->orderBy('name')->get();
         return view('dashboard', compact('card_home'));
     }
 
@@ -27,8 +27,8 @@ class CardHomeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:0,1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'status' => 'required|in:Active,Inactive,0,1',
             'schedule' => 'nullable|string|max:255',
             'link' => 'nullable|url|max:255',
         ]);
@@ -36,8 +36,6 @@ class CardHomeController extends Controller
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('content_images', 'public');
         }
-
-        $validated['status'] = $request->input('status');
 
         CardHome::create($validated);
 
@@ -51,8 +49,8 @@ class CardHomeController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'status' => 'required|in:0,1',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
+            'status' => 'required|in:Active,Inactive,0,1',
             'link' => 'nullable|url|max:255',
             'schedule' => 'nullable|string|max:255',
         ]);
@@ -64,7 +62,6 @@ class CardHomeController extends Controller
             $validated['image'] = $request->file('image')->store('content_images', 'public');
         }
 
-        $validated['status'] = $request->input('status');
         $content->update($validated);
 
         return redirect()->route('admin.content.index')->with('success', 'Konten berhasil diperbarui!');

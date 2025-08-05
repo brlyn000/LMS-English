@@ -54,7 +54,6 @@
                                     <i class="fas fa-tachometer-alt text-red-300 group-hover:text-white"></i>
                                 </div>
                                 <span class="font-medium">Dashboard</span>
-                                <span class="ml-auto bg-red-900 text-white text-xs px-2 py-1 rounded-full">3 New</span>
                             </a>
                         </li>
                         <li>
@@ -94,7 +93,6 @@
                                     <i class="fas fa-comments text-red-300 group-hover:text-white"></i>
                                 </div>
                                 <span class="font-medium">Discussion Forum</span>
-                                <span class="ml-auto bg-red-900 text-white text-xs px-2 py-1 rounded-full">42+</span>
                             </a>
                         </li>
                     </ul>
@@ -149,9 +147,12 @@
                     <button class="text-red-200 hover:text-white">
                         <i class="fas fa-question-circle"></i>
                     </button>
-                    <button class="text-red-200 hover:text-white">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </button>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="text-red-200 hover:text-white">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -167,10 +168,7 @@
                 </button>
                 <h2 class="text-lg font-semibold text-gray-800">{{ $header ?? 'Dashboard' }}</h2>
                 <div class="flex items-center space-x-2">
-                    <button class="p-2 text-gray-600 hover:text-red-600 relative">
-                        <i class="fas fa-bell"></i>
-                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-                    </button>
+                    <x-notification-bell />
                     <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin" class="w-8 h-8 rounded-full">
                 </div>
             </div>
@@ -184,6 +182,7 @@
                     {{ $header ?? 'Dashboard' }}
                 </h2>
                 <div class="flex items-center space-x-6">
+                    <x-notification-bell />
                     <div class="flex items-center space-x-4">
                         <div class="flex items-center space-x-2 relative group">
                             <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Admin" class="w-8 h-8 rounded-full border-2 border-white shadow">
@@ -192,7 +191,10 @@
                             
                             <!-- Dropdown Menu -->
                             <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden group-hover:block transition">
-                                <a href="{{ route('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+                                </form>
                             </div>
                         </div>
                     </div>

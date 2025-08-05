@@ -12,11 +12,12 @@ class Submission extends Model
     protected $table = 'submissions';
     protected $casts = [
         'submitted_at' => 'datetime',
+        'file_paths' => 'array',
     ];
     protected $fillable = [
         'material_id',
         'user_id',
-        'file_path',
+        'file_paths',
         'notes',
         'submitted_at',
         'score',

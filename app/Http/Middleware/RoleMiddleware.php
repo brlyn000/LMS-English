@@ -12,8 +12,8 @@ class RoleMiddleware
     {
         $user = Auth::user();
 
-        if (!$user || !$user->roles()->whereIn('role_id', $roleIds)->exists()) {
-            return response()->view('errors.403', [], 403);
+        if (!$user || !$user->roles()->whereIn('roles.id', $roleIds)->exists()) {
+            abort(403);
         }
 
         return $next($request);

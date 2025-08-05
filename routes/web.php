@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\ActivityLogController;
-use App\Http\Controllers\Admin\TaskController;
 use App\Http\Controllers\CardHomeController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ModuleController;
@@ -10,13 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\SubmissionController;
 use App\Http\Controllers\UserController;
-use App\Models\ActivityLog;
-use App\Models\CardHome;
 use App\Http\Controllers\MaterialController;
-use App\Models\Material;
-use App\Models\Module;
-use App\Models\Reply;
-use App\Models\Submission;
 use Illuminate\Support\Facades\Route;
 
 
@@ -32,6 +24,7 @@ Route::get('/modules/{id}/materials', [MaterialController::class, 'index'])->nam
 Route::get('material/{id}', [MaterialController::class, 'show'])->name('material.show');
 // Untuk mahasiswa mengumpulkan tugas
 Route::middleware(['auth'])->post('/materials/{material}/submit', [SubmissionController::class, 'store'])->name('submissions.store');
+Route::middleware(['auth'])->put('/submissions/{id}/update', [SubmissionController::class, 'update'])->name('submissions.update');
 // Untuk admin/instruktur melihat semua submission
 Route::middleware(['auth', 'role:1,2'])->get('/admin/materials/{material}/submissions', [SubmissionController::class, 'index'])->name('submissions.index');
 Route::delete('/submissions/{id}', [SubmissionController::class, 'destroy'])->name('submissions.destroy');
@@ -123,5 +116,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/forum', [ForumController::class, 'index'])->name('forum.index');
     Route::get('/forum/{thread}', [ForumController::class, 'show'])->name('forum.show');
 });
+
+
 
 require __DIR__.'/auth.php';

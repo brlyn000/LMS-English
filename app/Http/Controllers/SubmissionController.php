@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Submission;
 use App\Models\Material;
 use Illuminate\Support\Facades\Storage;
+use App\Services\NotificationService;
 
 class SubmissionController extends Controller
 {
@@ -33,20 +34,30 @@ class SubmissionController extends Controller
         }
 
         $request->validate([
-            'file' => 'required|file|max:30720', // 30MB max
+            'files' => 'required|array|min:1|max:5',
+            'files.*' => 'file|max:30720', // 30MB max per file
             'notes' => 'nullable|string'
         ]);
 
-        // Simpan file
-        $path = $request->file('file')->store('submissions', "public");
+        // Simpan multiple files
+        $filePaths = [];
+        foreach ($request->file('files') as $file) {
+            $filePaths[] = $file->store('submissions', 'public');
+        }
 
         // Buat submission baru
         $submission = Submission::create([
             'material_id' => $material->id,
             'user_id' => Auth::id(),
-            'file_path' => $path,
+            'file_paths' => $filePaths,
             'notes' => $request->notes,
             'submitted_at' => now(),
+        ]);
+        
+        NotificationService::create('submission_created', [
+            'message' => Auth::user()->name . ' mengumpulkan tugas: ' . $material->title,
+            'user' => Auth::user()->name,
+            'material' => $material->title
         ]);
 
         // Log aktivitas
@@ -56,6 +67,48 @@ class SubmissionController extends Controller
             ->route('material.show', $material->id)
             ->with('success', 'The task was sent successfully')
             ->with('submission', $submission);
+    }
+    
+    public function update(Request $request, $id)
+    {
+        $submission = Submission::findOrFail($id);
+        
+        // Check if user owns this submission
+        if (Auth::id() !== $submission->user_id) {
+            return redirect()->back()->with('error', 'Akses ditolak.');
+        }
+        
+        $request->validate([
+            'files' => 'nullable|array|max:5',
+            'files.*' => 'file|max:30720', // 30MB max per file
+            'notes' => 'nullable|string'
+        ]);
+        
+        // Update files if new files are uploaded
+        if ($request->hasFile('files')) {
+            // Delete old files
+            if ($submission->file_paths) {
+                foreach ($submission->file_paths as $oldPath) {
+                    if (Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                }
+            }
+            
+            // Store new files
+            $filePaths = [];
+            foreach ($request->file('files') as $file) {
+                $filePaths[] = $file->store('submissions', 'public');
+            }
+            $submission->file_paths = $filePaths;
+        }
+        
+        // Update notes
+        $submission->notes = $request->notes;
+        $submission->submitted_at = now();
+        $submission->save();
+        
+        return redirect()->back()->with('success', 'Tugas berhasil diperbarui.');
     }
 
 
@@ -69,9 +122,13 @@ class SubmissionController extends Controller
             return redirect()->back()->with('error', 'Akses ditolak.');
         }
 
-        // Hapus file dari penyimpanan
-        if (Storage::exists($submission->file_path)) {
-            Storage::delete($submission->file_path);
+        // Hapus files dari penyimpanan
+        if ($submission->file_paths) {
+            foreach ($submission->file_paths as $filePath) {
+                if (Storage::disk('public')->exists($filePath)) {
+                    Storage::disk('public')->delete($filePath);
+                }
+            }
         }
 
         // Hapus record dari database

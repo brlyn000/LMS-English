@@ -26,26 +26,26 @@
             <div class="bg-gradient-to-r from-red-50 to-white p-4 rounded-xl shadow border border-gray-100">
                 <h3 class="text-sm font-medium text-gray-500">Rata-rata Kelas</h3>
                 <p class="text-2xl font-bold text-red-600 mt-1">
-                    {{ number_format($students->flatMap->submissions->avg('score'), 2) }}
+                    {{ $students->flatMap->submissions->count() > 0 ? number_format($students->flatMap->submissions->avg('score'), 2) : '0.00' }}
                 </p>
             </div>
             <div class="bg-gradient-to-r from-blue-50 to-white p-4 rounded-xl shadow border border-gray-100">
                 <h3 class="text-sm font-medium text-gray-500">Nilai Tertinggi</h3>
                 <p class="text-2xl font-bold text-blue-600 mt-1">
-                    {{ number_format($students->flatMap->submissions->max('score'), 2) }}
+                    {{ $students->flatMap->submissions->count() > 0 ? number_format($students->flatMap->submissions->max('score'), 2) : '0.00' }}
                 </p>
             </div>
             <div class="bg-gradient-to-r from-green-50 to-white p-4 rounded-xl shadow border border-gray-100">
                 <h3 class="text-sm font-medium text-gray-500">Lulus</h3>
                 <p class="text-2xl font-bold text-green-600 mt-1">
-                    {{ $students->filter(fn($s) => $s->submissions->avg('score') >= 75)->count() }}
+                    {{ $students->filter(fn($s) => $s->submissions->count() > 0 && $s->submissions->avg('score') >= 75)->count() }}
                     <span class="text-sm font-normal">mahasiswa</span>
                 </p>
             </div>
             <div class="bg-gradient-to-r from-yellow-50 to-white p-4 rounded-xl shadow border border-gray-100">
                 <h3 class="text-sm font-medium text-gray-500">Perlu Perbaikan</h3>
                 <p class="text-2xl font-bold text-yellow-600 mt-1">
-                    {{ $students->filter(fn($s) => $s->submissions->avg('score') < 75)->count() }}
+                    {{ $students->filter(fn($s) => $s->submissions->count() == 0 || $s->submissions->avg('score') < 75)->count() }}
                     <span class="text-sm font-normal">mahasiswa</span>
                 </p>
             </div>
@@ -72,9 +72,9 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        @foreach($students as $student)
+                        @forelse($students as $student)
                         @php
-                            $avgScore = $student->submissions->avg('score');
+                            $avgScore = $student->submissions->count() > 0 ? $student->submissions->avg('score') : 0;
                             $statusColor = $avgScore >= 75 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
                         @endphp
                         <tr class="hover:bg-gray-50 transition-colors duration-150">
@@ -106,7 +106,7 @@
                                     <div class="ml-4 w-24">
                                         <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
                                             <div class="h-full {{ $avgScore >= 75 ? 'bg-green-500' : 'bg-red-500' }}" 
-                                                 style="width: {{ $avgScore }}%"></div>
+                                                 style="width: {{ min($avgScore, 100) }}%"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -115,25 +115,40 @@
                             <!-- Score Details Column -->
                             <td class="px-6 py-4">
                                 <div class="space-y-2">
-                                    @foreach($student->submissions as $submission)
+                                    @forelse($student->submissions as $submission)
                                     <div class="flex justify-between items-center">
                                         <div class="text-sm text-gray-700 truncate max-w-xs">
                                             {{ $submission->material->title ?? 'Tugas' }}
                                         </div>
                                         <span class="text-sm font-medium 
                                             {{ $submission->score >= 75 ? 'text-green-600' : 'text-red-600' }}">
-                                            {{ $submission->score }}
+                                            {{ $submission->score ?? 0 }}
                                         </span>
                                     </div>
-                                    @endforeach
+                                    @empty
+                                    <div class="text-sm text-gray-500 italic">
+                                        Belum ada submission
+                                    </div>
+                                    @endforelse
                                 </div>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="4" class="px-6 py-12 text-center">
+                                <div class="text-gray-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    <p class="text-lg font-medium">Belum ada mahasiswa</p>
+                                    <p class="text-sm">Data mahasiswa Teknologi Informasi akan muncul di sini</p>
+                                </div>
+                            </td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
-            
         </div>
     </div>
 </x-admin-layout>

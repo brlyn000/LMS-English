@@ -13,7 +13,6 @@ class Thread extends Model
         'title',
         'body',
         'user_id',
-        'image',
         'image_path',
         'program_studi',
         'category',
@@ -34,7 +33,7 @@ class Thread extends Model
     // Scope untuk filter berdasarkan program studi (jika ada kolom 'program_studi')
     public function scopeByProdi($query, $prodi)
     {
-        return $query->where('program_studi', $prodi);
+        return $query->where('program_studi', '=', $prodi);
     }
 
     // Thread.php

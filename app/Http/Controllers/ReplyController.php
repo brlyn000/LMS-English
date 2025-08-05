@@ -6,6 +6,8 @@ use App\Models\Reply;
 use App\Models\Thread;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\MediaCompressionService;
+use App\Services\NotificationService;
 
 class ReplyController extends Controller
 {
@@ -15,21 +17,30 @@ class ReplyController extends Controller
         $request->validate([
             'subject' => 'nullable|string|max:255',
             'deskripsi' => 'nullable|string',
-            'image' => 'nullable|image|max:2048', // max 2MB
+            'image' => 'nullable|image|max:10240', // max 10MB
         ]);
 
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('replies', 'public');
+            $compressionService = new MediaCompressionService();
+            $imagePath = $compressionService->compressImage($request->file('image'));
         }
 
         $thread->replies()->create([
             'subject' => $request->subject,
             'deskripsi' => $request->deskripsi,
+            'body' => $request->deskripsi ?? '',
             'image' => $imagePath,
             'user_id' => auth()->id(),
         ]);
+        
+        NotificationService::create('reply_created', [
+            'message' => auth()->user()->name . ' membalas thread: ' . $thread->title,
+            'user' => auth()->user()->name,
+            'thread' => $thread->title
+        ]);
+        
         logActivity('Thread', 'User add thread :'. $request->subject);
 
         return back()->with('success', 'Balasan berhasil dikirim.');
@@ -51,7 +62,7 @@ class ReplyController extends Controller
         $request->validate([
             'subject' => 'nullable|string|max:255',
             'deskripsi' => 'nullable|string|max:1000',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:10240',
         ]);
 
         if ($request->hasFile('image')) {

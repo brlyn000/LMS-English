@@ -79,10 +79,10 @@
                                             required 
                                             class="block mt-1 w-full rounded-lg border-gray-300 focus:border-red-400 focus:ring focus:ring-red-200 focus:ring-opacity-50 shadow-sm pl-10 pr-3 py-2 appearance-none bg-white">
                                             <option value="">Select Program</option>
-                                            <option value="2">Akuntansi</option>
-                                            <option value="3">Administrasi Perkantoran</option>
-                                            <option value="4">Teknologi Mesin</option>
                                             <option value="1">Teknologi Informasi</option>
+                                            <option value="2">Teknologi Mesin</option>
+                                            <option value="3">Akuntansi</option>
+                                            <option value="4">Administrasi Perkantoran</option>
                                         </select>
                                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                             <i class="fas fa-graduation-cap text-gray-400"></i>
@@ -352,7 +352,8 @@
                                 </a>
 
                                 <!-- Hapus -->
-                                <button class="text-gray-500 hover:text-red-600 p-1 rounded-full hover:bg-gray-100 delete-user-btn" data-id="{{ $user->id }}">
+                                <button onclick="showConfirmModal('deleteModal', 'submitDeleteForm({{ $user->id }})')" 
+                                    class="text-gray-500 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
@@ -435,21 +436,10 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Hapus modal -->
-                    <div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
-                        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm relative">
-                            <h2 class="text-xl font-semibold mb-4">Confirm Deletion</h2>
-                            <p>Are you sure you want to delete this user?</p>
-                            <form id="deleteUserForm" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <div class="mt-4 flex justify-end space-x-2">
-                                    <button type="button" id="cancelDelete" class="px-4 py-2 bg-gray-300 rounded">Cancel</button>
-                                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded">Delete</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    <form id="deleteForm" method="POST" style="display: none;">
+                        @csrf
+                        @method('DELETE')
+                    </form>
 
                     @endforeach
                     </tbody>
@@ -468,6 +458,12 @@
         </div>
     </div>
 
+    <x-confirm-modal 
+        id="deleteModal" 
+        title="Hapus User" 
+        message="Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan." 
+        confirmText="Ya, Hapus" 
+        cancelText="Batal" />
 
     @push('scripts')
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -591,17 +587,11 @@
                 $('#role-filter').on('change', fetchUsers);
             });
 
-        $(document).ready(function () {
-            $('.delete-user-btn').on('click', function () {
-                const userId = $(this).data('id');
-                $('#deleteUserForm').attr('action', `/admin/users/${userId}`);
-                $('#deleteModal').removeClass('hidden').addClass('flex');
-            });
-
-            $('#cancelDelete').on('click', function () {
-                $('#deleteModal').addClass('hidden').removeClass('flex');
-            });
-        });
+        function submitDeleteForm(userId) {
+            const form = document.getElementById('deleteForm');
+            form.action = `/admin/users/${userId}`;
+            form.submit();
+        }
 
         </script>
     @endpush

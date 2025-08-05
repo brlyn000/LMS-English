@@ -24,11 +24,14 @@ class ProfileController extends Controller
     {
         $user = auth()->user();
 
-        $totalAssignments = Material::where('type', 'tugas')
+        $totalAssignments = Material::where('type', 'Tugas')
             ->where('class_prodi_id', auth()->user()->program_studi_id)
             ->count();
             
         $userSubmissions = Submission::where('user_id', $user->id)->count();
+        
+        // Prevent division by zero
+        $assignmentSubmission = $totalAssignments > 0 ? round(($userSubmissions / $totalAssignments) * 100) : 0;
 
         $userReplies = Reply::where('user_id', $user->id)->count();
 
@@ -42,7 +45,8 @@ class ProfileController extends Controller
             'totalAssignments',
             'userSubmissions',
             'userReplies',
-            'recentActivities'
+            'recentActivities',
+            'assignmentSubmission'
         ));
     }
 

@@ -57,9 +57,9 @@
 
             <!-- Thread Content -->
             <div class="p-6">
-                @if ($thread->image)
+                @if ($thread->image_path)
                     <div class="mb-6 rounded-xl overflow-hidden shadow-sm">
-                        <img src="{{ asset('storage/' . $thread->image) }}" alt="Cover Thread" 
+                        <img src="{{ asset('storage/' . $thread->image_path) }}" alt="Cover Thread" 
                              class="w-full h-auto object-cover hover:scale-[1.01] transition-transform duration-300">
                     </div>
                 @endif

@@ -108,8 +108,16 @@
                         <!-- Thread Image -->
                         <div class="md:w-1/4 lg:w-1/5 h-48 md:h-auto relative overflow-hidden">
                             <div class="absolute inset-0 bg-gradient-to-br from-red-50 to-white flex items-center justify-center">
-                                <img src="{{ asset('storage/' . $thread->image) }}" alt="Thread cover" 
-                                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                @if($thread->image_path)
+                                    <img src="{{ asset('storage/' . $thread->image_path) }}" alt="Thread cover" 
+                                        class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                                @else
+                                    <div class="w-full h-full bg-gradient-to-br from-red-100 to-red-200 flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                @endif
                             </div>
                             <!-- Mobile Author Badge -->
                             <div class="md:hidden absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm">

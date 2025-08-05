@@ -12,6 +12,7 @@ class Reply extends Model
     protected $fillable = [
         'subject',
         'deskripsi',
+        'body',
         'image',
         'thread_id',
         'user_id',

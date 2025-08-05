@@ -31,28 +31,31 @@ class UserController extends Controller
         $card_home = CardHome::where('status', 'Active')->orderBy('name')->get();
 
         $totalModules = Module::count();
-        $completedModules = Submission::where('user_id', $user->id)
+        $completedModules = Submission::where('user_id', '=', $user->id)
             ->distinct('material_id')
             ->count('material_id');
         $courseCompletion = $totalModules ? round(($completedModules / $totalModules) * 100) : 0;
 
         $totalAssignments = Material::count();
-        $userSubmissions = Submission::where('user_id', $user->id)->count();
+        $userSubmissions = Submission::where('user_id', '=', $user->id)->count();
         $assignmentSubmission = $totalAssignments ? round(($userSubmissions / $totalAssignments) * 100) : 0;
 
         $totalThreads = Reply::count();
-        $userReplies = Reply::where('user_id', $user->id)->count();
+        $userReplies = Reply::where('user_id', '=', $user->id)->count();
         $forumParticipation = $totalThreads ? round(($userReplies / $totalThreads) * 100) : 0;
 
         // Recent Activity
         $activities = ActivityLog::with('user')->latest()->take(10)->get(); // recent 10
+
+        $materials = Material::count();
 
         return view('dashboard', compact(
             'card_home',
             'courseCompletion',
             'assignmentSubmission',
             'forumParticipation',
-            'activities'
+            'activities',
+            'materials'
         ));
     }
 }

@@ -6,6 +6,8 @@ use App\Models\Thread;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\MediaCompressionService;
+use App\Services\NotificationService;
 
 class ForumController extends Controller
 {
@@ -22,11 +24,11 @@ class ForumController extends Controller
         }
 
         if ($request->filled('category')) {
-            $threads->where('category', $request->category);
+            $threads->where('category', '=', $request->category);
         }
 
         if ($request->filled('search')) {
-            $threads->where('title', 'like', '%' . $request->search . '%');
+            $threads->where('title', 'like', '%' . $request->input('search') . '%');
         }
 
 
@@ -47,8 +49,7 @@ class ForumController extends Controller
         }
 
         if ($request->has('subject') && $request->input('subject') !== null) {
-            $subject = $request->input('subject');
-            $query->where('subject', 'like', '%' . $subject . '%');
+            $query->where('subject', 'like', '%' . $request->input('subject') . '%');
         }
 
         $replies = $query->latest()->get();
@@ -67,22 +68,32 @@ class ForumController extends Controller
             'title' => 'required|string|max:255',
             'body'  => 'required|string',
             'category' => 'required',
-            'image' => 'nullable|image|max:2048', // optional upload image
+            'image' => 'nullable|image|max:10240', // optional upload image
         ]);
 
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('threads', 'public');
+            $file = $request->file('image');
+            if ($file->isValid()) {
+                $compressionService = new MediaCompressionService();
+                $imagePath = $compressionService->compressImage($file);
+            }
         }
 
         Thread::create([
-            'title' => $request->title,
-            'body' => $request->body,
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
             'user_id' => auth()->id(),
-            'category' => $request->category,
-            'image' => $imagePath, // setelah upload
+            'category' => $request->input('category'),
+            'image_path' => $imagePath,
             'program_studi' => auth()->user()->program_studi_id,
+        ]);
+        
+        NotificationService::create('thread_created', [
+            'message' => auth()->user()->name . ' membuat thread baru: ' . $request->input('title'),
+            'user' => auth()->user()->name,
+            'title' => $request->input('title')
         ]);
 
         return redirect()->route('forum.index')->with('success', 'Thread berhasil dibuat.');
@@ -109,7 +120,11 @@ class ForumController extends Controller
             abort(403);
         }
 
-        $thread->update($request->only('title', 'body', 'category'));
+        $thread->update([
+            'title' => $request->input('title'),
+            'body' => $request->input('body'),
+            'category' => $request->input('category')
+        ]);
 
         return redirect()->route('forum.index')->with('success', 'Thread berhasil diperbarui.');
     }
@@ -122,8 +137,8 @@ class ForumController extends Controller
         }
 
         // Hapus gambar jika ada
-        if ($thread->image) {
-            Storage::disk('public')->delete($thread->image);
+        if ($thread->image_path) {
+            Storage::disk('public')->delete($thread->image_path);
         }
 
         $thread->delete();
@@ -136,12 +151,12 @@ class ForumController extends Controller
         $query = Thread::with(['user', 'programStudi'])->latest();
 
         if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->search . '%');
+            $query->where('title', 'like', '%' . $request->input('search') . '%');
         }
 
         if ($request->filled('prodi')) {
             $query->whereHas('programStudi', function ($q) use ($request) {
-                $q->where('nama_prodi', $request->prodi);
+                $q->where('nama_prodi', '=', $request->input('prodi'));
             });
         }
 

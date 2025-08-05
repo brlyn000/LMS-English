@@ -9,6 +9,10 @@ use App\Models\ActivityLog;
 use App\Models\ProgramStudi;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Thread;
+use App\Models\Reply;
+use App\Models\Material;
+use App\Models\Submission;
 use Carbon\Carbon;
 use DB;
 use Hash;
@@ -64,6 +68,16 @@ class DashboardController extends Controller
             $query->where('name', 'student');
         })->count();
 
+        // Forum Discussions
+        $totalThreads = Thread::count();
+        $totalReplies = Reply::count();
+        $forumDiscussions = $totalThreads + $totalReplies;
+        
+        // Completion Rate
+        $totalMaterials = Material::count();
+        $totalSubmissions = Submission::count();
+        $completionRate = $totalMaterials > 0 ? round(($totalSubmissions / $totalMaterials) * 100) : 0;
+        
         // Recent Activity
         $activities = ActivityLog::with('user')->latest()->take(10)->get(); // recent 10
 
@@ -76,6 +90,8 @@ class DashboardController extends Controller
             'enrollData' => $enrollData,
             'courseData' => $courseData,
             'activities'=> $activities,
+            'forumDiscussions' => $forumDiscussions,
+            'completionRate' => $completionRate,
          ]);
     }
 
@@ -101,7 +117,7 @@ class DashboardController extends Controller
         
         $adminUsers = DB::table('users')
             ->join('role_user', 'users.id', '=', 'role_user.user_id')
-            ->where('role_user.role_id', '1') // atau role_id = 1, sesuaikan
+            ->where('role_user.role_id', '=', 1)
             ->count();
 
         return view('admin.users', [
@@ -119,18 +135,21 @@ class DashboardController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'nim' => ['required', 'int'],
-            'program_studi_id' => ['required', 'int'],
+            'nim' => ['required', 'integer', 'unique:'.User::class],
+            'program_studi_id' => ['required', 'integer'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        $programStudi = \App\Models\ProgramStudi::find($request->input('program_studi_id'));
+        
         $user = User::create([
-            'name' => $request->name,
-            'nim' => $request->nim,
-            'program_studi_id' => $request->program_studi_id,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'name' => $request->input('name'),
+            'nim' => $request->input('nim'),
+            'program_studi' => $programStudi->kode_prodi ?? 'TI',
+            'program_studi_id' => $request->input('program_studi_id'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
         ]);
 
         $user->roles()->attach(3); // Role ID 3 sebagai default (misal: mahasiswa)
@@ -140,20 +159,25 @@ class DashboardController extends Controller
 
     public function search(Request $request)
     {
-        $search = $request->search;
-        $role = $request->role;
+        $request->validate([
+            'search' => 'nullable|string|max:255',
+            'role' => 'nullable|string|max:50'
+        ]);
+
+        $search = $request->input('search');
+        $role = $request->input('role');
 
         $users = User::with('roles')
             ->when($search, function ($query, $search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('nim', 'like', "%{$search}%");
+                    $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('nim', 'like', '%' . $search . '%');
                 });
             })
             ->when($role, function ($query, $role) {
                 $query->whereHas('roles', function ($q) use ($role) {
-                    $q->where('name', $role);
+                    $q->where('name', '=', $role);
                 });
             })
             ->get();
@@ -182,7 +206,7 @@ class DashboardController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'nim' => 'nullable|string|max:30',
+            'nim' => ['nullable', 'string', 'max:30', Rule::unique('users')->ignore($user->id)],
             'program_studi_id' => 'nullable|exists:program_studi,id',
             'password' => 'nullable|string|min:6|confirmed',
             'is_active' => 'nullable|boolean',
@@ -194,7 +218,7 @@ class DashboardController extends Controller
         $user->email = $validated['email'];
         $user->nim = $validated['nim'];
         $user->program_studi_id = $validated['program_studi_id'];
-        $user->is_active = $request->has('is_active');
+        $user->is_active = $request->boolean('is_active');
 
         if ($request->filled('password')) {
             $user->password = Hash::make($validated['password']);

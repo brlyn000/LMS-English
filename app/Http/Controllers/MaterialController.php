@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Material;
 use App\Models\Module;
 use Storage;
+use App\Services\MediaCompressionService;
+use App\Services\NotificationService;
 
 class MaterialController extends Controller
 {
@@ -17,7 +19,7 @@ class MaterialController extends Controller
         $module = Module::findOrFail($id);
 
         // Ambil semua materi yang terkait dengan modul ini
-        $materials = Material::where('module_id', $id)->get();
+        $materials = Material::where('module_id', '=', $id)->get();
 
         return view('admin.classes.material.index', compact('module', 'materials'));
     }
@@ -28,7 +30,7 @@ class MaterialController extends Controller
         $module = Module::findOrFail($id);
 
         // Ambil semua materi yang terkait dengan modul ini
-        $materials = Material::where('module_id', $id)->get();
+        $materials = Material::where('module_id', '=', $id)->get();
 
         return view('classes.material.index', compact('module', 'materials'));
     }
@@ -46,21 +48,37 @@ class MaterialController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'file' => 'required|file|mimes:pdf,mp4,docx,zip,rar|max:20480',
+            'file' => 'required|file|mimes:pdf,mp4,docx,zip,rar|max:10240',
             'type' => 'required|in:Dokumen,Video,Tugas,Link',
-            'class_prodi_id' => 'required|in:1,2,3,4',
+            'class_prodi_id' => 'required|exists:class_prodi,id',
         ]);
 
-        $filePath = $request->file('file')->store('materials', 'public');
+        $file = $request->file('file');
+        $compressionService = new MediaCompressionService();
+        
+        if (in_array($file->getClientOriginalExtension(), ['jpg', 'jpeg', 'png', 'gif'])) {
+            $filePath = $compressionService->compressImage($file);
+        } elseif (in_array($file->getClientOriginalExtension(), ['mp4', 'avi', 'mov'])) {
+            $filePath = $compressionService->compressVideo($file);
+        } else {
+            $filePath = $file->store('materials', 'public');
+        }
 
         Material::create([
             'module_id' => $id,
-            'title' => $request->title,
-            'description' => $request->description,
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
             'file_path' => $filePath,
-            'type' => $request->type,
-            'class_prodi_id' => $request->class_prodi_id,
+            'type' => $request->input('type'),
+            'class_prodi_id' => $request->input('class_prodi_id'),
             'user_id' => Auth::id()
+        ]);
+        
+        NotificationService::create('material_created', [
+            'message' => Auth::user()->name . ' menambahkan materi baru: ' . $request->input('title'),
+            'user' => Auth::user()->name,
+            'title' => $request->input('title'),
+            'type' => $request->input('type')
         ]);
 
         return redirect()->route('module.materials', $id)->with('success', 'Materi berhasil ditambahkan.');
@@ -89,7 +107,7 @@ class MaterialController extends Controller
 
         // Update basic fields
         $material->title = $validated['title'];
-        $material->description = $validated['description'] ?? null;
+        $material->description = $validated['description'];
         $material->type = $validated['type'];
 
         // Update file jika diupload ulang
@@ -115,9 +133,8 @@ class MaterialController extends Controller
 
     public function show($id)
     {
-        $material = Material::findOrFail($id); // Pastikan data d
-        // itemukan atau error 404
-        $module = Module::findOrFail($id);
+        $material = Material::findOrFail($id);
+        $module = $material->module;
 
         return view('classes.material.show', compact('material', 'module'));
     }
