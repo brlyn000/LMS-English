@@ -323,6 +323,15 @@
                                     </svg>
                                     Update Submission
                                 </button>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        window.toggleUpdateForm = function () {
+                                            const updateForm = document.getElementById('updateForm');
+                                            updateForm.classList.toggle('hidden');
+                                        };
+                                    });
+                                </script>
+
                                 
                                 <form action="{{ route('submissions.destroy', $mySubmission->id) }}" method="POST" 
                                     onsubmit="return confirm('Apakah Anda yakin ingin menghapus tugas ini? Tugas yang sudah dihapus tidak dapat dikembalikan.')"
@@ -631,11 +640,6 @@
                         updateFileCounter();
                     }
                     
-                    // Toggle update form visibility
-                    function toggleUpdateForm() {
-                        const updateForm = document.getElementById('updateForm');
-                        updateForm.classList.toggle('hidden');
-                    }
                 </script>
                 @endif
                 @php

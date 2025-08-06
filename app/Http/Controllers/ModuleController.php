@@ -17,6 +17,7 @@ class ModuleController extends Controller
 
         // Ambil modul berdasarkan prodi
         $modules = Module::where('program_studi', $prodi)
+                ->withCount('materials')
                 ->paginate(6)
                 ->withQueryString();
 
