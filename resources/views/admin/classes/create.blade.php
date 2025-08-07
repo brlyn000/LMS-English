@@ -32,12 +32,22 @@
                     <!-- Program Studi Field -->
                     <div class="space-y-2">
                         <label for="prodi" class="block text-sm font-medium text-gray-700">Program Studi</label>
-                        <select id="program_studi" name="program_studi" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm @error('program_studi') border-red-500 @enderror">
+                        @php
+                            $programStudi = [
+                                'TI' => 'Teknologi Informasi',
+                                'TM' => 'Teknik Mesin', 
+                                'AK' => 'Akuntansi',
+                                'AP' => 'Administrasi Perkantoran'
+                            ];
+                        @endphp
+                        <select id="program_studi" name="program_studi" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm @error('program_studi') border-red-500 @enderror">
                             <option value="">Pilih Program Studi</option>
-                            <option value="TI" {{ old('program_studi') == 'TI' ? 'selected' : '' }}>Teknologi Informasi</option>
-                            <option value="TM" {{ old('program_studi') == 'TM' ? 'selected' : '' }}>Teknik Mesin</option>
-                            <option value="AK" {{ old('program_studi') == 'AK' ? 'selected' : '' }}>Akuntansi</option>
-                            <option value="AP" {{ old('program_studi') == 'AP' ? 'selected' : '' }}>Administrasi Perkantoran</option>
+                            @foreach($programStudi as $kode => $nama)
+                                <option value="{{ $kode }}" {{ old('program_studi') == $kode ? 'selected' : '' }}>
+                                    {{ $nama }}
+                                </option>
+                            @endforeach
                         </select>
                         @error('program_studi')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

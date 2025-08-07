@@ -90,7 +90,7 @@
                     <!-- Upload File -->
                     <div>
                         <label for="file" class="block text-sm font-medium text-gray-700">File Materi <span class="text-red-500">*</span></label>
-                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md @error('file') border-red-500 border @enderror">
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md hover:border-red-400 transition-colors @error('file') border-red-500 @enderror" id="dropzone">
                             <div class="space-y-1 text-center">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -100,11 +100,13 @@
                                     <label for="file" class="relative cursor-pointer bg-white rounded-md font-medium text-red-600 hover:text-red-500">
                                         <span>Upload file</span>
                                         <input id="file" name="file" type="file" required
-                                               class="sr-only" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4">
+                                               class="sr-only" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.mp4,.zip,.rar">
                                     </label>
                                     <p class="pl-1">atau drag and drop</p>
                                 </div>
-                                <p class="text-xs text-gray-500">PDF, Word, Excel, PPT, MP4 (max 10MB)</p>
+                                <p class="text-xs text-gray-500">PDF, Word, Excel, PPT, MP4, ZIP (max 50MB)</p>
+                                <div id="file-info" class="hidden mt-2 p-2 bg-green-50 rounded text-sm text-green-700"></div>
+                                <div id="file-error" class="hidden mt-2 p-2 bg-red-50 rounded text-sm text-red-600"></div>
                             </div>
                         </div>
                         @error('file')
@@ -161,4 +163,75 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const fileInput = document.getElementById('file');
+        const dropzone = document.getElementById('dropzone');
+        const fileInfo = document.getElementById('file-info');
+        const fileError = document.getElementById('file-error');
+        const maxSize = 50 * 1024 * 1024; // 50MB
+        
+        // File input change handler
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        // Drag and drop handlers
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('border-red-400', 'bg-red-50');
+        });
+        
+        dropzone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('border-red-400', 'bg-red-50');
+        });
+        
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('border-red-400', 'bg-red-50');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect();
+            }
+        });
+        
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            fileInfo.classList.add('hidden');
+            fileError.classList.add('hidden');
+            
+            if (file) {
+                // Check file size
+                if (file.size > maxSize) {
+                    showError(`File terlalu besar. Maksimal 50MB. Ukuran file: ${(file.size / 1024 / 1024).toFixed(2)}MB`);
+                    fileInput.value = '';
+                    return;
+                }
+                
+                // Check file type
+                const allowedTypes = ['.pdf', '.doc', '.docx', '.ppt', '.pptx', '.xls', '.xlsx', '.mp4', '.zip', '.rar'];
+                const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+                
+                if (!allowedTypes.includes(fileExtension)) {
+                    showError('Tipe file tidak didukung. Gunakan: PDF, Word, Excel, PPT, MP4, ZIP, RAR');
+                    fileInput.value = '';
+                    return;
+                }
+                
+                // Show success info
+                showInfo(`File dipilih: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+            }
+        }
+        
+        function showError(message) {
+            fileError.textContent = message;
+            fileError.classList.remove('hidden');
+        }
+        
+        function showInfo(message) {
+            fileInfo.textContent = message;
+            fileInfo.classList.remove('hidden');
+        }
+    </script>
 </x-app-layout>
