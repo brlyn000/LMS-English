@@ -44,20 +44,24 @@ class ModuleController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'program_studi' => 'required|in:TI,TM,AK,AP',
-            'image_path' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'program_studi' => 'required|in:TI,TM,AK,AP',
+                'image_path' => 'nullable|image|mimes:jpg,jpeg,png|max:51200',
+            ]);
 
-        if ($request->hasFile('image_path')) {
-            $validated['image_path'] = $request->file('image_path')->store('images/modul', 'public');
+            if ($request->hasFile('image_path')) {
+                $validated['image_path'] = $request->file('image_path')->store('images/modul', 'public');
+            }
+
+            Module::create($validated);
+
+            return redirect()->route('admin.module.index')->with('success', 'Modul berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return back()->withInput()->with('error', 'Gagal mengunggah file. Pastikan ukuran file tidak melebihi 50MB.');
         }
-
-        Module::create($validated);
-
-        return redirect()->route('admin.module.index')->with('success', 'Modul berhasil ditambahkan');
     }
 
     public function edit(Module $module , $id)
@@ -74,7 +78,7 @@ class ModuleController extends Controller
             'title' => 'required',
             'description' => 'required',
             'program_studi' => 'required',
-            'image_path' => 'nullable|image|max:2048',
+            'image_path' => 'nullable|image|mimes:jpg,jpeg,png|max:51200',
         ]);
 
         if ($request->hasFile('image_path')) {

@@ -1,4 +1,4 @@
-<x-layouts-admin>
+<x-admin-layout>
     <div class="min-h-screen bg-gray-50 p-6">
         <!-- Header Section -->
         <div class="mb-8">
@@ -81,12 +81,12 @@
                             <input type="file" id="image_path" name="image_path" 
                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">Format: JPG, PNG, JPEG (Maks: 2MB). Biarkan kosong jika tidak ingin mengubah gambar.</p>
+                        <p class="mt-1 text-sm text-gray-500">Format: JPG, PNG, JPEG (Maks: 50MB). Biarkan kosong jika tidak ingin mengubah gambar.</p>
                         @error('image_path')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-
+                </div>
 
                 <!-- Form Footer -->
                 <div class="px-6 py-4 bg-gray-50 flex justify-between items-center">
@@ -103,4 +103,4 @@
             </form>
         </div>
     </div>
-</x-layouts-admin>
+</x-admin-layout>

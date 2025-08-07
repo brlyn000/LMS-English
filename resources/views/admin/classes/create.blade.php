@@ -1,4 +1,4 @@
-<x-layouts-admin>
+<x-admin-layout>
     <div class="min-h-screen bg-gray-50 p-6">
         <!-- Header Section -->
         <div class="mb-8">
@@ -16,6 +16,13 @@
                 </a>
             </div>
         </div>
+
+        <!-- Alert Messages -->
+        @if(session('error'))
+            <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                {{ session('error') }}
+            </div>
+        @endif
 
         <!-- Form Section -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
@@ -63,10 +70,11 @@
                     <div class="space-y-2">
                         <label for="image_path" class="block text-sm font-medium text-gray-700">Gambar Modul</label>
                         <div class="mt-1 flex items-center">
-                            <input type="file" id="image_path" name="image_path" 
+                            <input type="file" id="image_path" name="image_path" accept="image/jpeg,image/jpg,image/png"
                                 class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-red-50 file:text-red-700 hover:file:bg-red-100">
                         </div>
-                        <p class="mt-1 text-sm text-gray-500">Format: JPG, PNG, JPEG (Maks: 2MB)</p>
+                        <p class="mt-1 text-sm text-gray-500">Format: JPG, PNG, JPEG (Maks: 50MB)</p>
+                        <div id="file-error" class="mt-1 text-sm text-red-600 hidden"></div>
                         @error('image_path')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -88,4 +96,27 @@
             </form>
         </div>
     </div>
-</x-layouts-admin>
+
+    <script>
+        document.getElementById('image_path').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const errorDiv = document.getElementById('file-error');
+            const submitBtn = document.querySelector('button[type="submit"]');
+            
+            if (file) {
+                const maxSize = 50 * 1024 * 1024; // 50MB
+                
+                if (file.size > maxSize) {
+                    errorDiv.textContent = 'Ukuran file terlalu besar. Maksimal 50MB.';
+                    errorDiv.classList.remove('hidden');
+                    submitBtn.disabled = true;
+                    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    errorDiv.classList.add('hidden');
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+            }
+        });
+    </script>
+</x-admin-layout>
